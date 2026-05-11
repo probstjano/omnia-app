@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
@@ -16,51 +16,98 @@
       margin: 10px;
       font-size: 16px;
       line-height: 1.5;
+      color: #111;
     }
 
     h1 {
-      font-size: 20px;
-        margin-top: 60px;
-      margin-bottom: 10px;
+      font-size: 24px;
+      margin-top: 70px;
+      margin-bottom: 6px;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-top: 28px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 12px;
     }
 
     .intro {
+      margin-bottom: 18px;
+      max-width: 720px;
+    }
+
+    .section {
+      margin-top: 24px;
+    }
+
+    .assessment-links {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 12px;
       margin-bottom: 20px;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-
     @media (min-width: 600px) {
-      .grid {
-        grid-template-columns: 1fr 1fr;
+      .assessment-links {
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
+    .assessment-card,
     .card {
-      padding: 18px;
+      display: block;
+      padding: 16px;
       background: #f0f0f0;
-      text-align: center;
       border-radius: 12px;
-      font-size: 18px;
       text-decoration: none;
       color: black;
       border: 1px solid #ccc;
     }
 
+    .assessment-card {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .card {
+      font-size: 17px;
+      margin-top: 10px;
+    }
+
+    .card strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .assessment-link:hover,
     .card:hover {
       background: #e0e0e0;
     }
 
-  .search-container {
-  position: absolute;
-  top: 30px;        
-  right: 20px;      
-  max-width: 250px;
-}
+    details {
+      margin-top: 28px;
+      margin-bottom: 24px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .search-container {
+      position: absolute;
+      top: 30px;
+      right: 20px;
+      max-width: 250px;
+    }
 
     .search-input {
       width: 100%;
@@ -89,40 +136,60 @@
   </style>
 </head>
 <body>
-  <h1>Flying Assessment Leitfaden</h1>
+  <h1>Domizil Assessment-Leitfaden</h1>
 
   <div class="search-container">
-    <input class="search-input" type="text" id="searchInput" placeholder="🔍 Suche nach Thema, Name..." autocomplete="off">
+    <input class="search-input" type="text" id="searchInput" placeholder="🔍 Suche nach Assessment..." autocomplete="off">
     <div class="suggestions" id="suggestions" style="display:none;"></div>
   </div>
 
   <div class="intro">
-    <p>Dieser Bereich unterstützt dich bei der Anwendung des Assessment Leitfadens im Flying Physio, bei der Auswahl geeigneter Assessments und bietet Links/Hilfsmaterial zu verschiedenen Bereichen.</p>
-    <p>
-      📄 Die Assessments basieren auf dem von Mitarbeiter:innen erstellten Assessment-Leitfaden. Nähere Informationen zur Idee und Ziel findest du hier:  
-      <a href="Assessment-Leitfaden.pdf" target="_blank">Leitfaden (PDF)</a>
-    </p>
-    <p><strong>Standard-Assessments:</strong> Eines davon sollte in den ersten 3 Terminen durchgeführt werden.</p>
-    <p><strong>Bereichs-Assessments:</strong> Zur vertiefenden Untersuchung je nach Funktionsbereich.</p>
+    <p>Unterstützung bei Auswahl und Durchführung standardisierter Assessments im Flying Physio.
   </div>
 
-  <details style="margin-top: 20px;">
-    <summary>❓ Hinweise zur Anwendung des Leitfadens ❓</summary>
+  <section class="section">
+    <h2>1. Standard-Befund-Assessment auswählen</h2>
+    <p>Wähle innerhalb der ersten drei Termine ein geeignetes Standard-Assessment aus und dokumentiere es im Behandlungsplan.</p>
+
+  <div class="assessment-links">
+    <a class="assessment-card" href="sppb.html">SPPB</a>
+    <a class="assessment-card" href="DEMMI.html">DEMMI</a>
+    <a class="assessment-card" href="FiST.html">Function in Sitting Test</a>
+    <a class="assessment-card" href="PSFS.html">PSFS / GAS</a>
+  </div>
+</section>
+
+  <section class="section">
+    <h2>2. Bei Bedarf Bereichs-Assessments ergänzen</h2>
+    <p>Nutze vertiefende Assessments zur genaueren Abklärung spezifischer Funktionsbereiche.</p>
+
+    <a class="card" href="bereiche.html">
+      <strong>🗂️ Bereichs-Assessments</strong>
+      Assessments nach Funktionsbereich auswählen
+    </a>
+  </section>
+
+  <section class="section">
+    <h2>3. Hilfsmaterial nachschlagen</h2>
+    <p>Hier findest du Leitfaden, Merkblätter, Links und zusätzliche Informationen.</p>
+
+    <a class="card" href="Hilfsmaterial.html">
+      <strong>📚 Hilfsmaterial & Links</strong>
+      Ergänzende Materialien öffnen
+    </a>
+  </section>
+
+  <details>
+    <summary>❓ Hinweise zur Anwendung</summary>
     <div style="margin-top: 10px;">
-      <p>Der Assessment-Leitfaden dient als Orientierung für alle Therapeut*innen im Flying-Physio. Er unterstützt die strukturierte und vergleichbare Erfassung der Patientensituation – ohne die therapeutische Freiheit einzuschränken.</p>
-      <p><strong>Verbindlich, aber flexibel:</strong> Die Anwendung des Leitfadens ist grundsätzlich verpflichtend. Abweichungen sind in begründeten Fällen möglich und sollen fachlich reflektiert sein.</p>
-      <p><strong>📋 Standard-Assessments:</strong><br>Mindestens eines der folgenden Assessments sollte innerhalb der ersten drei Termine durchgeführt und im Cenplex-Behandlungsplan dokumentiert werden.</p>
-      <p><strong>🗂️ Bereichs-Assessments:</strong><br>Zur vertieften Abklärung spezifischer Probleme stehen thematisch geordnete Assessments zur Verfügung.</p>
-      <p><strong>♻️ Re-Assessment:</strong><br>Eine Wiederholung eines der eingesetzten Assessments erfolgt spätestens nach <strong>3 Monaten</strong> oder <strong>vor Therapieabschluss</strong>.<br>Bei Langzeitpatient*innen mindestens <strong>halbjährlich</strong>.</p>
-      <p><strong>🧰 Ergänzende Materialien:</strong><br>Hilfsmaterialien, Merkblätter und Links sowie klinische Entscheidungsunterstützung findest du unter <strong>„Hilfsmaterial & Links“</strong>.</p>
+      <p>Der Leitfaden wurde von Mitarbeitenden im Flying-Physios entwickelt und unterstützt eine strukturierte und vergleichbare Befunderhebung, ohne die therapeutische Freiheit einzuschränken.</p>
+      <p><strong>Standard-Assessments:</strong> Mindestens ein Assessment soll innerhalb der ersten drei Termine durchgeführt und dokumentiert werden.</p>
+      <p><strong>Bereichs-Assessments:</strong> Sie dienen der vertieften Abklärung spezifischer Probleme oder Funktionsbereiche.</p>
+      <p><strong>Re-Assessment:</strong> Spätestens nach 3 Monaten oder vor Therapieabschluss. Bei Langzeitpatient:innen mindestens halbjährlich.</p>
+      <p><strong>Abweichungen:</strong> In begründeten Fällen möglich und fachlich zu reflektieren.</p>
+      <p><a href="Assessment-Leitfaden.pdf" target="_blank">Vollständigen Assessment-Leitfaden mit HIntergründen zur Entwicklung als PDF öffnen</a></p>
     </div>
   </details>
-
-  <div class="grid">
-    <a class="card" href="standard.html">📋 Standard-Assessments</a>
-    <a class="card" href="bereiche.html">🗂️ Bereichs-Assessments</a>
-    <a class="card" href="Hilfsmaterial.html">📚 Hilfsmaterial & Links</a>
-  </div>
 
   <script>
     const files = [
@@ -130,19 +197,19 @@
       { name: 'Braincheck', file: 'Braincheck.html', tags: ['kognition', 'demenz', 'screening', 'Kognition', 'Gedächtniss', 'geriatrie', 'alter'] },
       { name: 'GDS', file: 'GDS.html', tags: ['depression', 'psychisch', 'screening', 'mental', 'stimmung', 'psyche', 'geriatrie', 'alter'] },
       { name: 'SPPB', file: 'sppb.html', tags: ['standard', 'mobilität', 'kraft', 'balance', 'gehen', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
-      { name: 'DEMMI', file: 'DEMMI.html', tags: ['mobilität', 'standard', 'bewegung', 'transfert', 'bett', 'bewegungsübergänge', 'mobilität', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
+      { name: 'DEMMI', file: 'DEMMI.html', tags: ['mobilität', 'standard', 'bewegung', 'transfert', 'bett', 'bewegungsübergänge', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
       { name: 'Gaitspeed', file: 'Gaitspeed.html', tags: ['geschwindigkeit', 'gang', 'mobilität', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
       { name: 'Tinetti', file: 'Tinetti.html', tags: ['gang', 'gleichgewicht', 'sturzrisiko', 'geriatrie', 'alter'] },
       { name: '5x sit-stand', file: '5xsit-stand.html', tags: ['kraft', 'untere extremität', 'mobilität', 'sitz-stand', 'aufstehen', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
-        { name: '30s assisted sit-stand', file: '30s_assissted.html', tags: ['kraft', 'untere extremität', 'mobilität', 'sitz-stand', 'aufstehen', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
+      { name: '30s assisted sit-stand', file: '30s_assissted.html', tags: ['kraft', 'untere extremität', 'mobilität', 'sitz-stand', 'aufstehen', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
       { name: 'FSMC', file: 'FSMC.html', tags: ['fatigue', 'neurologie', 'müdigkeit'] },
       { name: 'SARA', file: 'SARA.html', tags: ['ataxie', 'koordination', 'neurologie'] },
-      { name: 'Trunk Impairment Scale', file: 'trunk_impairment_scale.html', tags: ['rumpf', 'neurologie', 'gleichgewicht', 'stabilität', 'CVI', 'schlaganfall', 'neurologie'] },
+      { name: 'Trunk Impairment Scale', file: 'trunk_impairment_scale.html', tags: ['rumpf', 'neurologie', 'gleichgewicht', 'stabilität', 'CVI', 'schlaganfall'] },
       { name: 'PSFS / GAS', file: 'PSFS_GAS.html', tags: ['ziel', 'funktion', 'individualisiert', 'standard', 'geriatrie', 'alter', 'neurologie'] },
-      { name: 'Function in Sitting Test', file: 'FiST.html', tags: ['sitzen', 'balance', 'neurologie', 'gleichgewicht', 'schlaganfall', 'standard', 'neurologie'] },
+      { name: 'Function in Sitting Test', file: 'FiST.html', tags: ['sitzen', 'balance', 'neurologie', 'gleichgewicht', 'schlaganfall', 'standard'] },
       { name: 'TUG', file: 'TUG.html', tags: ['mobilität', 'gang', 'gleichgewicht', 'sturzrisiko', 'geriatrie', 'alter', 'neurologie'] },
-      { name: 'BBS', file: 'BBS.html', tags: ['gleichgewicht', 'sturzrisiko', 'balance', 'berg balance scale', 'short form', 'geriatrie', 'alter', 'neurologie' ] },
-      { name: 'FSST', file: 'FSST.html', tags: ['balance', 'reaktion', 'koordination', 'schritte', 'gleichgewicht', 'sturugefahr', 'geriatrie', 'alter', 'neurologie' ] }
+      { name: 'BBS', file: 'BBS.html', tags: ['gleichgewicht', 'sturzrisiko', 'balance', 'berg balance scale', 'short form', 'geriatrie', 'alter', 'neurologie'] },
+      { name: 'FSST', file: 'FSST.html', tags: ['balance', 'reaktion', 'koordination', 'schritte', 'gleichgewicht', 'sturzgefahr', 'geriatrie', 'alter', 'neurologie'] }
     ];
 
     const input = document.getElementById('searchInput');
@@ -159,7 +226,7 @@
 
       const matches = files.filter(item =>
         item.name.toLowerCase().includes(query) ||
-        item.tags.some(tag => tag.includes(query))
+        item.tags.some(tag => tag.toLowerCase().includes(query))
       );
 
       if (matches.length === 0) {
@@ -184,17 +251,5 @@
       }
     });
   </script>
-
-    </button>
-  <button onclick="window.location.href='index.html'" style="
-    padding: 10px 18px;
-    border-radius: 8px;
-    border: none;
-    background-color: #d0eaff;
-    font-size: 1rem;
-    cursor: pointer;
-  ">
-    🏠 Zur Hauptseite
-  </button>
 </body>
 </html>
