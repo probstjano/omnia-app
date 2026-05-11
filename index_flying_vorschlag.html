@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flying Assessment Leitfaden</title>
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 10px;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #111;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-top: 70px;
+      margin-bottom: 6px;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-top: 28px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .intro {
+      margin-bottom: 18px;
+      max-width: 720px;
+    }
+
+    .section {
+      margin-top: 24px;
+    }
+
+    .assessment-links {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 12px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 600px) {
+      .assessment-links {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .assessment-link,
+    .card {
+      display: block;
+      padding: 16px;
+      background: #f0f0f0;
+      border-radius: 12px;
+      text-decoration: none;
+      color: black;
+      border: 1px solid #ccc;
+    }
+
+    .assessment-link {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .card {
+      font-size: 17px;
+      margin-top: 10px;
+    }
+
+    .card strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .assessment-link:hover,
+    .card:hover {
+      background: #e0e0e0;
+    }
+
+    details {
+      margin-top: 28px;
+      margin-bottom: 24px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .search-container {
+      position: absolute;
+      top: 30px;
+      right: 20px;
+      max-width: 250px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 6px;
+      font-size: 16px;
+    }
+
+    .suggestions {
+      background: #fff;
+      border: 1px solid #ccc;
+      max-height: 200px;
+      overflow-y: auto;
+      position: absolute;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .suggestion-item {
+      padding: 6px;
+      cursor: pointer;
+    }
+
+    .suggestion-item:hover {
+      background: #eee;
+    }
+  </style>
+</head>
+<body>
+  <h1>Flying Assessment</h1>
+
+  <div class="search-container">
+    <input class="search-input" type="text" id="searchInput" placeholder="🔍 Suche nach Assessment..." autocomplete="off">
+    <div class="suggestions" id="suggestions" style="display:none;"></div>
+  </div>
+
+  <div class="intro">
+    <p>Unterstützung bei Auswahl und Durchführung standardisierter Assessments im Flying Physio.</p>
+  </div>
+
+  <section class="section">
+    <h2>1. Standard-Befund-Assessment auswählen</h2>
+    <p>Wähle innerhalb der ersten drei Termine ein geeignetes Standard-Assessment aus und dokumentiere es im Behandlungsplan.</p>
+
+    <div class="assessment-links">
+      <a class="assessment-link" href="#">SPPB</a>
+      <a class="assessment-link" href="#">DEMMI</a>
+      <a class="assessment-link" href="#">PSFS / GAS</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>2. Bei Bedarf Bereichs-Assessments ergänzen</h2>
+    <p>Nutze vertiefende Assessments zur genaueren Abklärung spezifischer Funktionsbereiche.</p>
+
+    <a class="card" href="bereiche.html">
+      <strong>🗂️ Bereichs-Assessments</strong>
+      Assessments nach Funktionsbereich auswählen
+    </a>
+  </section>
+
+  <section class="section">
+    <h2>3. Hilfsmaterial nachschlagen</h2>
+    <p>Hier findest du Leitfaden, Merkblätter, Links und zusätzliche Informationen.</p>
+
+    <a class="card" href="Hilfsmaterial.html">
+      <strong>📚 Hilfsmaterial & Links</strong>
+      Ergänzende Materialien öffnen
+    </a>
+  </section>
+
+  <details>
+    <summary>❓ Hinweise zur Anwendung</summary>
+    <div style="margin-top: 10px;">
+      <p>Der Leitfaden unterstützt eine strukturierte und vergleichbare Befunderhebung, ohne die therapeutische Freiheit einzuschränken.</p>
+      <p><strong>Standard-Assessments:</strong> Mindestens ein Assessment soll innerhalb der ersten drei Termine durchgeführt und dokumentiert werden.</p>
+      <p><strong>Bereichs-Assessments:</strong> Sie dienen der vertieften Abklärung spezifischer Probleme oder Funktionsbereiche.</p>
+      <p><strong>Re-Assessment:</strong> Spätestens nach 3 Monaten oder vor Therapieabschluss. Bei Langzeitpatient:innen mindestens halbjährlich.</p>
+      <p><strong>Abweichungen:</strong> In begründeten Fällen möglich und fachlich zu reflektieren.</p>
+      <p><a href="Assessment-Leitfaden.pdf" target="_blank">Vollständigen Assessment-Leitfaden als PDF öffnen</a></p>
+    </div>
+  </details>
+
+  <script>
+    const files = [
+      { name: 'ISI', file: 'ISI.html', tags: ['schlaf', 'insomnie', 'schlafstörung', 'geriatrie', 'alter'] },
+      { name: 'Braincheck', file: 'Braincheck.html', tags: ['kognition', 'demenz', 'screening', 'Kognition', 'Gedächtniss', 'geriatrie', 'alter'] },
+      { name: 'GDS', file: 'GDS.html', tags: ['depression', 'psychisch', 'screening', 'mental', 'stimmung', 'psyche', 'geriatrie', 'alter'] },
+      { name: 'SPPB', file: 'sppb.html', tags: ['standard', 'mobilität', 'kraft', 'balance', 'gehen', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
+      { name: 'DEMMI', file: 'DEMMI.html', tags: ['mobilität', 'standard', 'bewegung', 'transfert', 'bett', 'bewegungsübergänge', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
+      { name: 'Gaitspeed', file: 'Gaitspeed.html', tags: ['geschwindigkeit', 'gang', 'mobilität', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
+      { name: 'Tinetti', file: 'Tinetti.html', tags: ['gang', 'gleichgewicht', 'sturzrisiko', 'geriatrie', 'alter'] },
+      { name: '5x sit-stand', file: '5xsit-stand.html', tags: ['kraft', 'untere extremität', 'mobilität', 'sitz-stand', 'aufstehen', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
+      { name: '30s assisted sit-stand', file: '30s_assissted.html', tags: ['kraft', 'untere extremität', 'mobilität', 'sitz-stand', 'aufstehen', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
+      { name: 'FSMC', file: 'FSMC.html', tags: ['fatigue', 'neurologie', 'müdigkeit'] },
+      { name: 'SARA', file: 'SARA.html', tags: ['ataxie', 'koordination', 'neurologie'] },
+      { name: 'Trunk Impairment Scale', file: 'trunk_impairment_scale.html', tags: ['rumpf', 'neurologie', 'gleichgewicht', 'stabilität', 'CVI', 'schlaganfall'] },
+      { name: 'PSFS / GAS', file: 'PSFS_GAS.html', tags: ['ziel', 'funktion', 'individualisiert', 'standard', 'geriatrie', 'alter', 'neurologie'] },
+      { name: 'Function in Sitting Test', file: 'FiST.html', tags: ['sitzen', 'balance', 'neurologie', 'gleichgewicht', 'schlaganfall', 'standard'] },
+      { name: 'TUG', file: 'TUG.html', tags: ['mobilität', 'gang', 'gleichgewicht', 'sturzrisiko', 'geriatrie', 'alter', 'neurologie'] },
+      { name: 'BBS', file: 'BBS.html', tags: ['gleichgewicht', 'sturzrisiko', 'balance', 'berg balance scale', 'short form', 'geriatrie', 'alter', 'neurologie'] },
+      { name: 'FSST', file: 'FSST.html', tags: ['balance', 'reaktion', 'koordination', 'schritte', 'gleichgewicht', 'sturzgefahr', 'geriatrie', 'alter', 'neurologie'] }
+    ];
+
+    const input = document.getElementById('searchInput');
+    const suggestionsBox = document.getElementById('suggestions');
+
+    input.addEventListener('input', () => {
+      const query = input.value.trim().toLowerCase();
+      suggestionsBox.innerHTML = '';
+
+      if (query.length < 3) {
+        suggestionsBox.style.display = 'none';
+        return;
+      }
+
+      const matches = files.filter(item =>
+        item.name.toLowerCase().includes(query) ||
+        item.tags.some(tag => tag.toLowerCase().includes(query))
+      );
+
+      if (matches.length === 0) {
+        suggestionsBox.style.display = 'none';
+        return;
+      }
+
+      matches.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item';
+        div.innerHTML = `<strong>${item.name}</strong> <small style="color:gray;">(${item.tags.join(', ')})</small>`;
+        div.onclick = () => window.location.href = item.file;
+        suggestionsBox.appendChild(div);
+      });
+
+      suggestionsBox.style.display = 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.search-container')) {
+        suggestionsBox.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
