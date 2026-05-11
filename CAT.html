@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CAT – COPD Assessment Test</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="robotoBase64.js"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+      font-size: 16px;
+      max-width: 950px;
+    }
+
+    h1 { margin-bottom: .5rem; }
+
+    .intro {
+      margin-bottom: 1.5rem;
+    }
+
+    .qblock {
+      margin: 1.4rem 0;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .scale-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .anchor-left {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .anchor-right {
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .options {
+      display: flex;
+      gap: .45rem;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .option input {
+      display: none;
+    }
+
+    .option span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border: 1px solid #999;
+      border-radius: 50%;
+      background: #f0f0f0;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .option input:checked + span {
+      background: #d0eaff;
+      border-color: #4a90c2;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin-top: 18px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 24px;
+      font-weight: bold;
+      white-space: pre-line;
+    }
+
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 700px) {
+      .scale-row {
+        grid-template-columns: 1fr;
+        gap: .6rem;
+      }
+
+      .anchor-left,
+      .anchor-right {
+        text-align: left;
+      }
+
+      .options {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>CAT – COPD Assessment Test</h1>
+
+<p class="intro">
+  Der COPD Assessment Test (CAT) erfasst, wie stark die COPD den Alltag beeinträchtigt.
+  Der Gesamtwert liegt zwischen 0 und 40 Punkten. Je niedriger der Score, desto geringer ist die Beeinträchtigung.
+</p>
+
+<form id="catForm">
+  <div id="catContainer"></div>
+</form>
+
+<button type="button" onclick="calculateCAT()">✅ Score berechnen</button>
+<button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
+
+<div id="result"></div>
+
+<div class="footer-nav">
+  <button onclick="goBack()">⬅️ Zurück</button>
+  <button onclick="window.location.href='index.html'">🏠 Hauptseite</button>
+</div>
+
+<script>
+const catItems = [
+  {
+    left: "Ich huste nie.",
+    right: "Ich huste ständig."
+  },
+  {
+    left: "Ich bin überhaupt nicht verschleimt.",
+    right: "Ich bin völlig verschleimt."
+  },
+  {
+    left: "Ich spüre keinerlei Engegefühl in der Brust.",
+    right: "Ich spüre ein sehr starkes Engegefühl in der Brust."
+  },
+  {
+    left: "Wenn ich bergauf oder eine Treppe hinaufgehe, komme ich nicht ausser Atem.",
+    right: "Wenn ich bergauf oder eine Treppe hinaufgehe, komme ich sehr ausser Atem."
+  },
+  {
+    left: "Ich bin bei meinen häuslichen Aktivitäten nicht eingeschränkt.",
+    right: "Ich bin bei meinen häuslichen Aktivitäten sehr stark eingeschränkt."
+  },
+  {
+    left: "Ich habe keine Bedenken, trotz meiner Lungenerkrankung das Haus zu verlassen.",
+    right: "Ich habe wegen meiner Lungenerkrankung grosse Bedenken, das Haus zu verlassen."
+  },
+  {
+    left: "Ich schlafe tief und fest.",
+    right: "Wegen meiner Lungenerkrankung schlafe ich nicht tief und fest."
+  },
+  {
+    left: "Ich bin voller Energie.",
+    right: "Ich habe überhaupt keine Energie."
+  }
+];
+
+function renderCAT() {
+  const container = document.getElementById("catContainer");
+
+  catItems.forEach((item, index) => {
+    let options = "";
+
+    for (let v = 0; v <= 5; v++) {
+      options += `
+        <label class="option">
+          <input type="radio" name="q${index + 1}" value="${v}">
+          <span>${v}</span>
+        </label>
+      `;
+    }
+
+    container.innerHTML += `
+      <div class="qblock">
+        <div class="scale-row">
+          <div class="anchor-left">${item.left}</div>
+          <div class="options">${options}</div>
+          <div class="anchor-right">${item.right}</div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+renderCAT();
+
+let catScore = null;
+
+function calculateCAT() {
+  let total = 0;
+
+  for (let i = 1; i <= 8; i++) {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+
+    if (!selected) {
+      document.getElementById("result").innerText =
+        "Bitte alle Fragen beantworten.";
+      return;
+    }
+
+    total += Number(selected.value);
+  }
+
+  catScore = total;
+
+  document.getElementById("result").innerText =
+    `CAT-Gesamtscore: ${total} / 40`;
+}
+
+function downloadPDF() {
+  if (catScore === null) {
+    alert("Bitte zuerst Score berechnen.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  if (window.robotoBase64) {
+    doc.addFileToVFS("Roboto-Regular.ttf", window.robotoBase64);
+    doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
+    doc.setFont("Roboto");
+  }
+
+  const today = new Date().toLocaleDateString("de-CH");
+  let y = 20;
+  const left = 15;
+  const lineHeight = 8;
+
+  doc.setFontSize(16);
+  doc.text("CAT – COPD Assessment Test", left, y);
+  y += lineHeight;
+
+  doc.setFontSize(11);
+  doc.text(`Datum: ${today}`, left, y);
+  y += lineHeight + 4;
+
+  catItems.forEach((item, index) => {
+    const selected = document.querySelector(`input[name="q${index + 1}"]:checked`);
+    const value = selected ? selected.value : "-";
+
+    const text = `${index + 1}. ${item.left} — ${item.right}`;
+    const lines = doc.splitTextToSize(text, 150);
+
+    lines.forEach((line, lineIndex) => {
+      doc.text(line, left, y);
+      if (lineIndex === 0) {
+        doc.text(value.toString(), 195, y, { align: "right" });
+      }
+      y += lineHeight;
+    });
+
+    y += 2;
+
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+    }
+  });
+
+  y += 6;
+  doc.setFontSize(13);
+  doc.text(`CAT-Gesamtscore: ${catScore} / 40`, left, y);
+
+  doc.save("CAT_Auswertung.pdf");
+}
+
+function goBack() {
+  if (document.referrer && document.referrer !== window.location.href) {
+    history.back();
+  } else {
+    window.location.href = "index.html";
+  }
+}
+</script>
+
+</body>
+</html>
