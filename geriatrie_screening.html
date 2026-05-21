@@ -572,12 +572,6 @@
       <a href="https://probstjano.github.io/OpenPdf/MiniBEST_Protokoll.pdf" target="_blank" rel="noopener">MiniBEST Protokoll (PDF)</a>
     </p>
 
-    <div id="miniBestResult" class="mini-result">Mini-BESTest Gesamtscore: 0 / 28
-Antizipatorisch: 0 / 6
-Reaktive posturale Kontrolle: 0 / 6
-Sensorische Orientierung: 0 / 6
-Dynamischer Gang: 0 / 10</div>
-
     <form id="miniBESTForm">
       <div id="miniBestContainer"></div>
     </form>
@@ -974,36 +968,34 @@ function calculateGripBest() {
 
   output.value = bestKg.toFixed(1);
 }
-    function calculateMiniBEST() {
-      let total = 0;
-      let antizipatorisch = 0;
-      let reaktiv = 0;
-      let sensorisch = 0;
-      let dynamisch = 0;
+function calculateMiniBEST() {
+  let total = 0;
+  let antizipatorisch = 0;
+  let reaktiv = 0;
+  let sensorisch = 0;
+  let dynamisch = 0;
 
-      for (let i = 1; i <= 14; i++) {
-        const selected = document.querySelector(`select[name="mb${i}"]`);
-        if (!selected || selected.value === "") continue;
+  for (let i = 1; i <= 14; i++) {
+    const selected = document.querySelector(`select[name="mb${i}"]`);
+    if (!selected || selected.value === "") continue;
 
-        const val = Number(selected.value);
-        total += val;
+    const val = Number(selected.value);
+    total += val;
 
-        if (i <= 3) antizipatorisch += val;
-        else if (i <= 6) reaktiv += val;
-        else if (i <= 9) sensorisch += val;
-        else dynamisch += val;
-      }
+    if (i <= 3) antizipatorisch += val;
+    else if (i <= 6) reaktiv += val;
+    else if (i <= 9) sensorisch += val;
+    else dynamisch += val;
+  }
 
-      document.getElementById("miniBestResult").textContent =
-        `Mini-BESTest Gesamtscore: ${total} / 28\n` +
-        `Antizipatorisch: ${antizipatorisch} / 6\n` +
-        `Reaktive posturale Kontrolle: ${reaktiv} / 6\n` +
-        `Sensorische Orientierung: ${sensorisch} / 6\n` +
-        `Dynamischer Gang: ${dynamisch} / 10`;
-
-      return { total, antizipatorisch, reaktiv, sensorisch, dynamisch };
-    }
-
+  return {
+    total,
+    antizipatorisch,
+    reaktiv,
+    sensorisch,
+    dynamisch
+  };
+}
     function radioValue(name) {
       const selected = document.querySelector(`input[name="${name}"]:checked`);
       return selected ? selected.value : "nicht beantwortet";
