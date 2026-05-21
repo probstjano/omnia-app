@@ -41,6 +41,8 @@ const ASSETS_TO_CACHE = [
   'ACL-RSI.html',
   'START-Back.html',
   'NDI.html',
+    'geriatrie_screening.html',
+  
   // PDFs
   'BBS_Protokoll.pdf',
   'DEMMI_Protokoll.pdf',
