@@ -4,7 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Geriatrie Screening</title>
+
   <link rel="manifest" href="manifest.json">
+
+  <!-- PDF Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="robotoBase64.js"></script>
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -602,14 +607,24 @@
   </section>
 
   <!-- SEITE 5 -->
-  <section class="page" id="page5">
-    <h2>5. Report</h2>
-    <p class="muted">Zusammenfassung aller eingegebenen Werte ohne Interpretation.</p>
+<section class="page" id="page5">
+  <h2>Report erstellen</h2>
+  <p class="muted">
+    Wählen Sie aus, welcher Bericht als PDF erstellt werden soll.
+  </p>
 
-    <div id="reportBox"></div>
+  <div class="card">
+    <button type="button" class="primary" onclick="generatePatientPDF()">
+      📄 Zusammenfassung für Patient:innen PDF erstellen
+    </button>
 
-    <button type="button" class="primary" onclick="window.print()">🖨️ Drucken / als PDF speichern</button>
-  </section>
+    <br><br>
+
+    <button type="button" class="primary" onclick="generateClinicalPDF()">
+      📄 Fachreport PDF erstellen
+    </button>
+  </div>
+</section>
 
   <div class="nav-buttons">
     <button type="button" class="secondary" onclick="goBackPage()">⬅️ Zurück</button>
