@@ -562,16 +562,26 @@ function formatNewtonToKg(value) {
   doc.setFont(undefined, "normal");
   y += 3;
 
+if (v.miniAnswered > 0) {
   y = addSectionTitle(doc, "Mini-BESTest", y);
+
   doc.setFont(undefined, "bold");
   y = addWrappedText(doc, `${v.mini.total} / 28`, x, y, maxWidth, lh);
   doc.setFont(undefined, "normal");
+
   bullet(`Antizipatorisch: ${v.mini.antizipatorisch} / 6`);
   bullet(`Reaktive posturale Kontrolle: ${v.mini.reaktiv} / 6`);
   bullet(`Sensorische Orientierung: ${v.mini.sensorisch} / 6`);
   bullet(`Dynamischer Gang: ${v.mini.dynamisch} / 10`);
+
+  y += 4;
+}
+
+if (v.tugDualDiff !== "nicht eingetragen") {
+  y = addSectionTitle(doc, "TUG Dual Task", y);
   bullet(`Dual-Task-Kosten: ${v.tugDualDiff} %`);
   y += 4;
+}
 
   y = addSectionTitle(doc, "Einordnung", y);
   bullet(sitStandPercentileLine(v.sitStandNorm, "fach"));
