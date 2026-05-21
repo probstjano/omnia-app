@@ -442,7 +442,29 @@
       } else {
         y = addWrappedText(doc, "Die hinterlegten Kriterien zeigen keine eindeutigen Hinweise auf eine erhöhte Sturzgefahr.", x + 5, y, maxWidth, lh);
       }
+y += 4;
 
+y = addSectionTitle(doc, "Was bedeuten diese Resultate?", y);
+
+y = addWrappedText(
+  doc,
+  "Körperliche Aktivität, Gleichgewicht und Muskelkraft sind wichtige Voraussetzungen, um im Alltag mobil, sicher und selbständig zu bleiben. Gerade im höheren Alter können regelmässige Bewegung sowie gezieltes Kraft- und Gleichgewichtstraining helfen, Mobilität und Lebensqualität zu erhalten.",
+  x,
+  y,
+  maxWidth,
+  lh
+);
+
+y += 1;
+
+y = addWrappedText(
+  doc,
+  "Ergänzend zu unseren individuellen Empfehlungen erhalten Sie – je nach Resultaten – zusätzliche Informationen zu Bewegung, Krafttraining, Gleichgewicht, Sturzprävention und passenden Bewegungsangeboten.",
+  x,
+  y,
+  maxWidth,
+  lh
+);
       const name = safeFileName(["Patientenbericht_Geriatrie_Screening", v.lastName, v.firstName]);
       doc.save(`${name}.pdf`);
     }
