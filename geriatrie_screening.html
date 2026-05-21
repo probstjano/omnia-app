@@ -477,7 +477,10 @@ const name = safeFileName([
   birthDateForFile
 ]);
 
-    function formatNewtonToKg(value) {
+doc.save(`${name}.pdf`);
+}
+
+function formatNewtonToKg(value) {
       const n = Number(value);
       return (!isNaN(n) && n > 0) ? (n / 9.81).toFixed(1) : "-";
     }
@@ -596,12 +599,15 @@ const name = safeFileName([
   : "keinGeburtsdatum";
 
 const name = safeFileName([
-  "Fachreport_Geriatrie_Screenin",
+  "Fachreport_Geriatrie_Screening",
   v.lastName,
   v.firstName,
   birthDateForFile
 ]);
+
+doc.save(`${name}.pdf`);
+}
   
-  </script>
+</script>
 </body>
 </html>
