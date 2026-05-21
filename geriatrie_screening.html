@@ -56,14 +56,22 @@
       overflow-x: auto;
     }
 
-    .step-pill {
-      padding: .45rem .7rem;
-      border-radius: 999px;
-      background: #f0f0f0;
-      border: 1px solid #ccc;
-      font-size: 14px;
-      white-space: nowrap;
-    }
+ .step-pill {
+  padding: .45rem .7rem;
+  border-radius: 999px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.step-pill:hover {
+  background: #e6e6e6;
+}
 
     .step-pill.active {
       background: #d0eaff;
@@ -345,14 +353,14 @@
     <button onclick="swReset()">⟳</button>
   </div>
 
-  <div class="stepper">
-    <div class="step-pill active">1 Angaben</div>
-    <div class="step-pill">2 Fragen</div>
-    <div class="step-pill">3 Übergabe</div>
-<div class="step-pill">4 Testung</div>
-<div class="step-pill">5 Mini-BESTest</div>
-<div class="step-pill">6 Report</div>
-  </div>
+<div class="stepper">
+  <button class="step-pill active" onclick="goToPage(0)">1 Angaben</button>
+  <button class="step-pill" onclick="goToPage(1)">2 Fragen</button>
+  <button class="step-pill" onclick="goToPage(2)">3 Übergabe</button>
+  <button class="step-pill" onclick="goToPage(3)">4 Testung</button>
+  <button class="step-pill" onclick="goToPage(4)">5 Mini-BESTest</button>
+  <button class="step-pill" onclick="goToPage(5)">6 Report</button>
+</div>
 
   <!-- SEITE 1 -->
   <section class="page active" id="page0">
@@ -893,6 +901,11 @@
         window.location.href = "index.html";
       }
     }
+
+    function goToPage(pageIndex) {
+  currentPage = pageIndex;
+  updatePage();
+}
 
     function swUpdate() {
       const now = Date.now();
