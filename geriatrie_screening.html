@@ -348,9 +348,10 @@
   <div class="stepper">
     <div class="step-pill active">1 Angaben</div>
     <div class="step-pill">2 Fragen</div>
-    <div class="step-pill">3 Testung</div>
-    <div class="step-pill">4 Mini-BESTest</div>
-    <div class="step-pill">5 Report</div>
+    <div class="step-pill">3 Übergabe</div>
+<div class="step-pill">4 Testung</div>
+<div class="step-pill">5 Mini-BESTest</div>
+<div class="step-pill">6 Report</div>
   </div>
 
   <!-- SEITE 1 -->
@@ -458,9 +459,24 @@
   </section>
 
   <!-- SEITE 3 -->
-  <section class="page" id="page2">
+<section class="page" id="page2">
+  <h2>Vielen Dank</h2>
+
+  <div class="card" style="text-align:center; padding:2rem;">
+    <p style="font-size:20px; font-weight:bold;">
+      Danke fürs Ausfüllen.
+    </p>
+
+    <p style="font-size:18px;">
+      Bitte geben Sie das iPad am Empfang oder Ihrer Therapeutin / Ihrem Therapeuten zurück.
+    </p>
+  </div>
+</section>
+
+  <!-- SEITE 4 -->
+  <section class="page" id="page3">
     <h2>3. Testung vor Ort</h2>
-    <p class="muted">Die Werte werden durch die Therapeut:in eingetragen. Die Stoppuhr oben rechts kann für Gehgeschwindigkeit und 5x Sit-Stand verwendet werden.</p>
+    <p class="muted">Die Werte werden durch die Therapeut:in eingetragen.</p>
 
     <div class="test-card">
       <div class="test-title">Gehgeschwindigkeit</div>
@@ -578,7 +594,7 @@
   </section>
 
   <!-- SEITE 5 -->
-  <section class="page" id="page4">
+  <section class="page" id="page5">
     <h2>5. Report</h2>
     <p class="muted">Zusammenfassung aller eingegebenen Werte ohne Interpretation.</p>
 
@@ -598,7 +614,7 @@
 
   <script>
     let currentPage = 0;
-    const totalPages = 5;
+    const totalPages = 6;
 
     const gdsItems = [
       { text: "Sind Sie grundsätzlich mit Ihrem Leben zufrieden?", yes: 0, no: 1 },
