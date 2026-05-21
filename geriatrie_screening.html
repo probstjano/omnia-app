@@ -455,16 +455,17 @@ y = addWrappedText(
   lh
 );
 
-y += 1;
+y += 8;
 
-y = addWrappedText(
-  doc,
-  "Ergänzend zu unseren individuellen Empfehlungen erhalten Sie – je nach Resultaten – zusätzliche Informationen zu Bewegung, Krafttraining, Gleichgewicht, Sturzprävention und passenden Bewegungsangeboten.",
-  x,
-  y,
-  maxWidth,
-  lh
-);
+y = addSectionTitle(doc, "Gemeinsam festgelegte Prioritäten", y);
+
+doc.setFont(undefined, "normal");
+
+for (let i = 1; i <= 3; i++) {
+  doc.text(`${i}.`, x, y);
+  doc.line(x + 8, y, x + 125, y);
+  y += 12;
+}
       
       const birthDateForFile = v.birthDate
   ? v.birthDate.replaceAll("-", "")
