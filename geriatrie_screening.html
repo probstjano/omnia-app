@@ -831,26 +831,76 @@
       `;
     }
 
-    function renderMiniBest() {
-      const container = document.getElementById("miniBestContainer");
-      container.innerHTML = "";
+function renderMiniBest() {
+  const container = document.getElementById("miniBestContainer");
+  container.innerHTML = "";
 
-      miniBestItems.forEach((item, index) => {
-        const q = index + 1;
-        container.innerHTML += `
-          <div class="question-block">
-            <label for="mb${q}"><strong>${item.title}</strong></label>
-            <p><strong>Anweisung:</strong> ${item.instruction}</p>
-            <select name="mb${q}" id="mb${q}" onchange="calculateMiniBEST()">
-              <option value="">Bitte auswählen</option>
-              <option value="2">${item.options[0]}</option>
-              <option value="1">${item.options[1]}</option>
-              <option value="0">${item.options[2]}</option>
-            </select>
+  miniBestItems.forEach((item, index) => {
+    const q = index + 1;
+
+    let extraFields = "";
+
+    if (q === 14) {
+      extraFields = `
+        <div class="form-grid three" style="margin-top: 1rem;">
+          <div>
+            <label for="tugSingleTime">TUG ohne Dual Task (s)</label>
+            <input type="number" id="tugSingleTime" min="0" step="0.01" placeholder="z. B. 12.40">
           </div>
-        `;
-      });
+
+          <div>
+            <label for="tugDualTime">TUG mit Dual Task (s)</label>
+            <input type="number" id="tugDualTime" min="0" step="0.01" placeholder="z. B. 15.10">
+          </div>
+
+          <div>
+            <label for="tugDualDiff">Dual-Task-Differenz (%)</label>
+            <input type="text" id="tugDualDiff" readonly placeholder="automatisch">
+          </div>
+        </div>
+      `;
     }
+
+    container.innerHTML += `
+      <div class="question-block">
+        <label for="mb${q}"><strong>${item.title}</strong></label>
+
+        <p><strong>Anweisung:</strong> ${item.instruction}</p>
+
+        <select name="mb${q}" id="mb${q}" onchange="calculateMiniBEST()">
+          <option value="">Bitte auswählen</option>
+          <option value="2">${item.options[0]}</option>
+          <option value="1">${item.options[1]}</option>
+          <option value="0">${item.options[2]}</option>
+        </select>
+
+        ${extraFields}
+      </div>
+    `;
+  });
+
+  const tugSingle = document.getElementById("tugSingleTime");
+  const tugDual = document.getElementById("tugDualTime");
+
+  if (tugSingle && tugDual) {
+    tugSingle.addEventListener("input", calculateTugDualDiff);
+    tugDual.addEventListener("input", calculateTugDualDiff);
+  }
+}
+
+function calculateTugDualDiff() {
+  const single = Number(document.getElementById("tugSingleTime").value);
+  const dual = Number(document.getElementById("tugDualTime").value);
+  const output = document.getElementById("tugDualDiff");
+
+  if (!single || !dual || single <= 0) {
+    output.value = "";
+    return;
+  }
+
+  const diff = ((dual - single) / single) * 100;
+  output.value = diff.toFixed(1);
+}
 
     function setupAutoCalculations() {
       document.getElementById("gaitTime1").addEventListener("input", calculateGaitSpeed);
