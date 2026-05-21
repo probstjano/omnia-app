@@ -465,9 +465,17 @@ y = addWrappedText(
   maxWidth,
   lh
 );
-      const name = safeFileName(["Patientenbericht_Geriatrie_Screening", v.lastName, v.firstName]);
-      doc.save(`${name}.pdf`);
-    }
+      
+      const birthDateForFile = v.birthDate
+  ? v.birthDate.replaceAll("-", "")
+  : "keinGeburtsdatum";
+
+const name = safeFileName([
+  "Patientenreport_Geriatrie_Screening",
+  v.lastName,
+  v.firstName,
+  birthDateForFile
+]);
 
     function formatNewtonToKg(value) {
       const n = Number(value);
@@ -583,10 +591,17 @@ y = addWrappedText(
       y = addWrappedText(doc, `Körperliche Aktivität: ${v.physicalActivityLow ? "erfüllt (<60 min/Woche)" : "nicht erfüllt"}`, x, y, maxWidth, lh);
       y = addWrappedText(doc, `Low gait speed: ${v.lowGait ? "erfüllt (<0.8 m/s)" : "nicht erfüllt"}`, x, y, maxWidth, lh);
 
-      const name = safeFileName(["Fachreport_Geriatrie_Screening", v.lastName, v.firstName]);
-      doc.save(`${name}.pdf`);
-    }
+      const birthDateForFile = v.birthDate
+  ? v.birthDate.replaceAll("-", "")
+  : "keinGeburtsdatum";
 
+const name = safeFileName([
+  "Fachreport_Geriatrie_Screenin",
+  v.lastName,
+  v.firstName,
+  birthDateForFile
+]);
+  
   </script>
 </body>
 </html>
