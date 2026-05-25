@@ -455,17 +455,16 @@ y = addWrappedText(
   lh
 );
 
-y += 8;
+y += 1;
 
-y = addSectionTitle(doc, "Gemeinsam festgelegte Prioritäten", y);
-
-doc.setFont(undefined, "normal");
-
-for (let i = 1; i <= 3; i++) {
-  doc.text(`${i}.`, x, y);
-  doc.line(x + 8, y, x + 125, y);
-  y += 12;
-}
+y = addWrappedText(
+  doc,
+  "Ergänzend zu unseren individuellen Empfehlungen erhalten Sie – je nach Resultaten – zusätzliche Informationen zu Bewegung, Krafttraining, Gleichgewicht, Sturzprävention und passenden Bewegungsangeboten.",
+  x,
+  y,
+  maxWidth,
+  lh
+);
       
       const birthDateForFile = v.birthDate
   ? v.birthDate.replaceAll("-", "")
@@ -478,201 +477,189 @@ const name = safeFileName([
   birthDateForFile
 ]);
 
-doc.save(`${name}.pdf`);
-}
+      doc.save(`${name}.pdf`);
+    }
 
-function formatNewtonToKg(value) {
+    function formatNewtonToKg(value) {
       const n = Number(value);
       return (!isNaN(n) && n > 0) ? (n / 9.81).toFixed(1) : "-";
     }
 
-function generateClinicalPDF() {
-  const v = getPreparedValues();
+    function generateClinicalPDF() {
+      const v = getPreparedValues();
 
-  const doc = setupPDF();
-  let y = 20;
-  const x = 15;
-  const maxWidth = 180;
-  const lh = 6;
+      const doc = setupPDF();
+      let y = 20;
+      const x = 15;
+      const maxWidth = 180;
+      const lh = 6;
 
-  function bullet(text, indent = 6) {
-    y = addWrappedText(doc, `• ${text}`, x + indent, y, maxWidth - indent, lh);
-  }
+      function line(text, indent = 0) {
+        y = addWrappedText(doc, text, x + indent, y, maxWidth - indent, lh);
+      }
 
-  function row(label, value, extra = "") {
-    doc.setFont(undefined, "bold");
-    doc.text(label, x, y);
-    doc.setFont(undefined, "normal");
-    doc.text(value, x + 70, y);
-    if (extra) doc.text(extra, x + 120, y);
-    y += lh;
-  }
+      function item(text, indent = 5) {
+        y = addWrappedText(doc, `- ${text}`, x + indent, y, maxWidth - indent, lh);
+      }
 
-  doc.setFontSize(16);
-  doc.setFont(undefined, "bold");
-  doc.text("Fachreport Geriatrie-Screening", x, y);
-  doc.setFont(undefined, "normal");
-  y += 10;
+      function boldLine(text, indent = 0) {
+        doc.setFont(undefined, "bold");
+        line(text, indent);
+        doc.setFont(undefined, "normal");
+      }
 
-  doc.setFontSize(10);
-  y = addWrappedText(doc, `Patient:in: ${v.firstName} ${v.lastName}`, x, y, maxWidth, lh);
-  y = addWrappedText(doc, `Geburtsdatum: ${v.birthDate} (${v.age !== null ? v.age + " Jahre" : "Alter nicht berechenbar"})`, x, y, maxWidth, lh);
-  y = addWrappedText(doc, `Geschlecht: ${v.sexText}`, x, y, maxWidth, lh);
-  y = addWrappedText(doc, `Testdatum: ${v.screeningDate}`, x, y, maxWidth, lh);
-  y += 5;
+      function valueBlock(title, value, details = []) {
+        boldLine(`${title}: ${value}`);
+        details.forEach(d => item(d, 8));
+        y += 2;
+      }
 
-  y = addSectionTitle(doc, "1. Screeningfragen", y);
-  bullet(`GDS-4: ${v.gds.total} / 4 Punkten (${v.gds.answered} / 4 Fragen beantwortet)`);
-  bullet(`Exhaustion: ${v.exhaustion.total} / 6`);
-  bullet(`Alles war anstrengend: ${v.exhaustion.answers[0]}`, 12);
-  bullet(`Zu nichts aufraffen: ${v.exhaustion.answers[1]}`, 12);
-  bullet(`Körperliche Aktivität: ${v.activeTotal} Minuten/Woche`);
-  bullet(`Sturz in den letzten 12 Monaten: ${radioValue("fall12m")}`);
+      function fulfilledFrailtyCriteria() {
+        const out = [];
+        if (v.frailtyExhaustion) out.push("Exhaustion");
+        if (v.frailtyStrength) out.push("geringe Muskelkraft");
+        if (v.physicalActivityLow) out.push("geringe körperliche Aktivität");
+        if (v.lowGait) out.push("Low gait speed");
+        return out;
+      }
 
-  if (radioValue("fall12m") === "Ja") {
-    bullet(`Anzahl Stürze: ${v.fallCount}`, 12);
-    bullet(`Verletzung dabei: ${v.fallInjury}`, 12);
-    bullet(`Nach Sturz wieder aufstehen: ${v.fallGetUp}`, 12);
-  }
+      doc.setFontSize(16);
+      doc.setFont(undefined, "bold");
+      doc.text("Fachreport Geriatrie-Screening", x, y);
+      doc.setFont(undefined, "normal");
+      y += 10;
 
-  bullet(`Unsicherheit beim Gehen oder Stehen: ${radioValue("unsteady")}`);
-  bullet(`Angst zu stürzen: ${radioValue("fearFall")}`);
-  bullet(`Traut sich aktuell selbständig vom Boden aufzustehen: ${radioValue("floorConfidence")}`);
-  y += 5;
+      doc.setFontSize(10);
+      line(`Patient:in: ${v.firstName} ${v.lastName}`);
+      line(`Geburtsdatum: ${v.birthDate} (${v.age !== null ? v.age + " Jahre" : "Alter nicht berechenbar"})`);
+      line(`Geschlecht: ${v.sexText}`);
+      line(`Testdatum: ${v.screeningDate}`);
+      y += 5;
 
-  y = addSectionTitle(doc, "2. Körperliche Tests – Zusammenfassung", y);
+      y = addSectionTitle(doc, "1. Screeningfragen", y);
+      item(`GDS-4: ${v.gds.total} / 4 Punkten (${v.gds.answered} / 4 Fragen beantwortet)`);
+      item(`Exhaustion: ${v.exhaustion.total} / 6`);
+      item(`Alles war anstrengend: ${v.exhaustion.answers[0]}`, 10);
+      item(`Zu nichts aufraffen: ${v.exhaustion.answers[1]}`, 10);
+      item(`Körperliche Aktivität: ${v.activeTotal} Minuten/Woche`);
+      item(`Sturz in den letzten 12 Monaten: ${radioValue("fall12m")}`);
 
-  row("Gehgeschwindigkeit", `${v.gaitSpeed} m/s`);
-  row("5x Sit-Stand", `${v.sitStandTime}${v.sitStandUnable ? "" : " s"}`, sitStandPercentileLine(v.sitStandNorm, "fach").replace("5x Sit-Stand Perzentil: ", ""));
-  row("Griffkraft", `${v.gripBest} kg`, v.gripPercentile !== "nicht eingetragen" ? `P${v.gripPercentile}` : "");
-  row("Transfer Boden → Stand", `${v.floorTransfer}`);
-  
-  if (v.miniAnswered > 0) {
-    row("Mini-BESTest", `${v.mini.total} / 28`);
-  }
+      if (radioValue("fall12m") === "Ja") {
+        item(`Anzahl Stürze: ${v.fallCount}`, 10);
+        item(`Verletzung dabei: ${v.fallInjury}`, 10);
+        item(`Nach Sturz wieder aufstehen: ${v.fallGetUp}`, 10);
+      }
 
-  if (v.tugDualDiff !== "nicht eingetragen") {
-    row("Dual-Task-Kosten", `${v.tugDualDiff} %`);
-  }
+      item(`Unsicherheit beim Gehen oder Stehen: ${radioValue("unsteady")}`);
+      item(`Angst zu stürzen: ${radioValue("fearFall")}`);
+      item(`Traut sich aktuell selbständig vom Boden aufzustehen: ${radioValue("floorConfidence")}`);
+      y += 5;
 
-  y += 5;
+      y = addSectionTitle(doc, "2. Körperliche Tests - Zusammenfassung", y);
 
-  y = addSectionTitle(doc, "3. Beurteilung", y);
+      valueBlock("Gehgeschwindigkeit", `${v.gaitSpeed} m/s`);
+      valueBlock("5x Sit-Stand", `${v.sitStandTime}${v.sitStandUnable ? "" : " s"}`, [
+        sitStandPercentileLine(v.sitStandNorm, "fach")
+      ]);
 
-  doc.setFont(undefined, "bold");
-  y = addWrappedText(doc, "Sarkopenie", x, y, maxWidth, lh);
-  doc.setFont(undefined, "normal");
+      const gripDetails = [];
+      if (v.gripPercentile !== "nicht eingetragen") gripDetails.push(`Griffkraft Perzentil: P${v.gripPercentile}`);
+      valueBlock("Griffkraft dominante Hand", `${v.gripBest} kg`, gripDetails);
 
-  if (v.sarcopeniaSitStand || v.lowGrip) {
-    y = addWrappedText(doc, "Sarkopenie klinisch wahrscheinlich.", x + 6, y, maxWidth, lh);
+      valueBlock("Transfer Boden -> Stand", `${v.floorTransfer}`);
 
-    if (v.sarcopeniaSitStand) bullet("5x Sit-Stand >15 s oder nicht möglich", 12);
-    if (v.lowGrip) bullet("Griffkraft unter Cut-off (Männer <27 kg, Frauen <16 kg)", 12);
-  } else {
-    y = addWrappedText(doc, "Keine deutlichen Hinweise auf Sarkopenie anhand der hinterlegten Kriterien.", x + 6, y, maxWidth, lh);
-  }
+      if (v.miniAnswered > 0) valueBlock("Mini-BESTest", `${v.mini.total} / 28`);
+      if (v.tugDualDiff !== "nicht eingetragen") valueBlock("Dual-Task-Kosten", `${v.tugDualDiff} %`);
 
-  y += 3;
+      y += 3;
 
-  doc.setFont(undefined, "bold");
-  y = addWrappedText(doc, "Sturzrisiko", x, y, maxWidth, lh);
-  doc.setFont(undefined, "normal");
+      y = addSectionTitle(doc, "3. Beurteilung", y);
 
-  y = addWrappedText(doc, `Einstufung: ${v.fallRisk.level}`, x + 6, y, maxWidth, lh);
-  y = addWrappedText(doc, v.fallRisk.text, x + 6, y, maxWidth, lh);
+      boldLine("Sarkopenie");
+      if (v.sarcopeniaSitStand || v.lowGrip) {
+        line("Sarkopenie klinisch wahrscheinlich.", 5);
+        if (v.sarcopeniaSitStand) item("5x Sit-Stand >15 s oder nicht möglich", 10);
+        if (v.lowGrip) item("Griffkraft unter Cut-off (Männer <27 kg, Frauen <16 kg)", 10);
+      } else {
+        line("Keine deutlichen Hinweise auf Sarkopenie anhand der hinterlegten Kriterien.", 5);
+      }
+      y += 3;
 
-  if (v.fallRisk.level === "stark erhöht") {
-    if (v.fallInjury === "Ja") bullet("Verletzung nach Sturz", 12);
-    if (v.fallGetUp === "Nein" || v.fallGetUp === "mit Hilfe / teilweise") bullet("Nach Sturz nicht selbständig aufgestanden", 12);
-    if (v.fallCountNum >= 2) bullet("Zwei oder mehr Stürze in den letzten 12 Monaten", 12);
-  } else if (v.fallRisk.level === "erhöht") {
-    bullet(`Alarmfragen positiv: ${v.alarmCount} / 3`, 12);
-    bullet(`Auffällige körperliche Tests: ${v.fallRisk.abnormalCount}`, 12);
-  }
+      boldLine("Sturzrisiko");
+      line(`Einstufung: ${v.fallRisk.level}`, 5);
+      line(v.fallRisk.text, 5);
 
-  y += 3;
+      if (v.fallRisk.level === "stark erhöht") {
+        if (v.fallInjury === "Ja") item("Verletzung nach Sturz", 10);
+        if (v.fallGetUp === "Nein" || v.fallGetUp === "mit Hilfe / teilweise") item("Nach Sturz nicht selbständig aufgestanden", 10);
+        if (v.fallCountNum >= 2) item("Zwei oder mehr Stürze in den letzten 12 Monaten", 10);
+      } else if (v.fallRisk.level === "erhöht") {
+        line(`Alarmfragen positiv: ${v.alarmCount} / 3`, 5);
+        line(`Auffällige körperliche Tests: ${v.fallRisk.abnormalCount}`, 5);
+      }
+      y += 3;
 
-  doc.setFont(undefined, "bold");
-  y = addWrappedText(doc, "Frailty-Kriterien nach Fried (ohne Gewichtsverlust)", x, y, maxWidth, lh);
-  doc.setFont(undefined, "normal");
+      boldLine("Frailty-Kriterien nach Fried (ohne Gewichtsverlust)");
+      line(`Frailty-Kriterien nach Fried: ${v.frailtyCriteria} Kriterien erfüllt`, 5);
+      const frailtyList = fulfilledFrailtyCriteria();
+      if (frailtyList.length > 0) {
+        frailtyList.forEach(c => item(c, 10));
+      } else {
+        item("keine der hinterlegten Frailty-Kriterien erfüllt", 10);
+      }
+      y += 6;
 
-  y = addWrappedText(doc, `${v.frailtyCriteria} Kriterien erfüllt`, x + 6, y, maxWidth, lh);
+      y = addSectionTitle(doc, "4. Rohwerte / Details", y);
 
-  if (v.frailtyExhaustion) bullet("Exhaustion", 12);
-  if (v.frailtyStrength) bullet("geringe Muskelkraft", 12);
-  if (v.physicalActivityLow) bullet("geringe körperliche Aktivität", 12);
-  if (v.lowGait) bullet("low gait speed", 12);
+      boldLine("Gehgeschwindigkeit");
+      item(`Strecke: ${v.gaitDistance} m`);
+      item(`Trial 1: ${v.gaitTime1} s`);
+      item(`Trial 2: ${v.gaitTime2} s`);
+      item(`Schnellere Zeit: ${v.gaitBestTime} s`);
+      y += 2;
 
-  if (v.frailtyCriteria === 0) {
-    bullet("keine der hinterlegten Frailty-Kriterien erfüllt", 12);
-  }
+      boldLine("5x Sit-Stand");
+      item(`Endwert: ${v.sitStandTime}${v.sitStandUnable ? "" : " s"}`);
+      item(sitStandPercentileLine(v.sitStandNorm, "fach"));
+      y += 2;
 
-  y += 6;
+      boldLine("Griffkraft dominante Hand");
+      item(`Trial 1: ${v.gripTrial1} N (${formatNewtonToKg(v.gripTrial1)} kg)`);
+      item(`Trial 2: ${v.gripTrial2} N (${formatNewtonToKg(v.gripTrial2)} kg)`);
+      item(`Trial 3: ${v.gripTrial3} N (${formatNewtonToKg(v.gripTrial3)} kg)`);
+      item(`Bester Wert: ${v.gripBest} kg`);
+      if (v.gripPercentile !== "nicht eingetragen") item(`Griffkraft Perzentil: P${v.gripPercentile}`);
+      y += 2;
 
-  y = addSectionTitle(doc, "4. Rohwerte / Details", y);
+      if (v.miniAnswered > 0) {
+        boldLine("Mini-BESTest");
+        item(`Gesamtscore: ${v.mini.total} / 28`);
+        item(`Antizipatorisch: ${v.mini.antizipatorisch} / 6`);
+        item(`Reaktive posturale Kontrolle: ${v.mini.reaktiv} / 6`);
+        item(`Sensorische Orientierung: ${v.mini.sensorisch} / 6`);
+        item(`Dynamischer Gang: ${v.mini.dynamisch} / 10`);
+        y += 2;
+      }
 
-  doc.setFont(undefined, "bold");
-  y = addWrappedText(doc, "Gehgeschwindigkeit", x, y, maxWidth, lh);
-  doc.setFont(undefined, "normal");
-  bullet(`Strecke: ${v.gaitDistance} m`);
-  bullet(`Trial 1: ${v.gaitTime1} s`);
-  bullet(`Trial 2: ${v.gaitTime2} s`);
-  bullet(`Schnellere Zeit: ${v.gaitBestTime} s`);
-  y += 2;
+      if (v.tugDualDiff !== "nicht eingetragen") {
+        boldLine("TUG Dual Task");
+        item(`Dual-Task-Kosten: ${v.tugDualDiff} %`);
+        y += 2;
+      }
 
-  doc.setFont(undefined, "bold");
-  y = addWrappedText(doc, "5x Sit-Stand", x, y, maxWidth, lh);
-  doc.setFont(undefined, "normal");
-  bullet(`Endwert: ${v.sitStandTime}${v.sitStandUnable ? "" : " s"}`);
-  bullet(sitStandPercentileLine(v.sitStandNorm, "fach"));
-  y += 2;
+      const birthDateForFile = v.birthDate
+        ? v.birthDate.replaceAll("-", "")
+        : "keinGeburtsdatum";
 
-  doc.setFont(undefined, "bold");
-  y = addWrappedText(doc, "Griffkraft dominante Hand", x, y, maxWidth, lh);
-  doc.setFont(undefined, "normal");
-  bullet(`Trial 1: ${v.gripTrial1} N (${formatNewtonToKg(v.gripTrial1)} kg)`);
-  bullet(`Trial 2: ${v.gripTrial2} N (${formatNewtonToKg(v.gripTrial2)} kg)`);
-  bullet(`Trial 3: ${v.gripTrial3} N (${formatNewtonToKg(v.gripTrial3)} kg)`);
-  bullet(`Bester Wert: ${v.gripBest} kg`);
-  if (v.gripPercentile !== "nicht eingetragen") {
-    bullet(`Griffkraft Perzentil: P${v.gripPercentile}`);
-  }
-  y += 2;
+      const name = safeFileName([
+        "Fachreport_Geriatrie_Screening",
+        v.lastName,
+        v.firstName,
+        birthDateForFile
+      ]);
 
-  if (v.miniAnswered > 0) {
-    doc.setFont(undefined, "bold");
-    y = addWrappedText(doc, "Mini-BESTest", x, y, maxWidth, lh);
-    doc.setFont(undefined, "normal");
-    bullet(`Gesamtscore: ${v.mini.total} / 28`);
-    bullet(`Antizipatorisch: ${v.mini.antizipatorisch} / 6`);
-    bullet(`Reaktive posturale Kontrolle: ${v.mini.reaktiv} / 6`);
-    bullet(`Sensorische Orientierung: ${v.mini.sensorisch} / 6`);
-    bullet(`Dynamischer Gang: ${v.mini.dynamisch} / 10`);
-    y += 2;
-  }
-
-  if (v.tugDualDiff !== "nicht eingetragen") {
-    doc.setFont(undefined, "bold");
-    y = addWrappedText(doc, "TUG Dual Task", x, y, maxWidth, lh);
-    doc.setFont(undefined, "normal");
-    bullet(`Dual-Task-Kosten: ${v.tugDualDiff} %`);
-    y += 2;
-  }
-
-  const birthDateForFile = v.birthDate
-    ? v.birthDate.replaceAll("-", "")
-    : "keinGeburtsdatum";
-
-  const name = safeFileName([
-    "Fachreport_Geriatrie_Screening",
-    v.lastName,
-    v.firstName,
-    birthDateForFile
-  ]);
-
-  doc.save(`${name}.pdf`);
-}
-  
-</script>
+      doc.save(`${name}.pdf`);
+    }
+  </script>
 </body>
 </html>
