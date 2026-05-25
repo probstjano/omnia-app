@@ -82,7 +82,6 @@
 
   <section class="page" id="page1">
     <h2>2. Patient:innen-Fragen</h2>
-    <div class="card"><h3>GDS-4</h3><p class="muted">Kreuzen Sie die entsprechende Antwort an.</p><div id="gdsContainer"></div></div>
     <div class="card"><h3>Exhaustion</h3><p class="muted">Während der letzten zwei Wochen: Bitte geben Sie an, wie oft Sie sich so gefühlt haben.</p><div id="exhaustionContainer"></div></div>
     <div class="card"><h3>Körperliche Aktivität</h3><div class="form-grid two">
       <div><label for="activeDays">An wie vielen Tagen pro Woche sind Sie körperlich aktiv?</label><p class="muted">Mindestens mässig ins Schwitzen oder ausser Atem kommen, z. B. zügiges Gehen, Wandern, Gartenarbeit, Velofahren, Sport.</p><input type="number" id="activeDays" min="0" max="7" step="1" placeholder="0–7 Tage"></div>
@@ -140,7 +139,6 @@
 
   <script>
     let currentPage = 0; const totalPages = 6;
-    const gdsItems = [{ text: "Sind Sie grundsätzlich mit Ihrem Leben zufrieden?", yes: 0, no: 1 },{ text: "Haben Sie das Gefühl, Ihr Leben sei leer?", yes: 1, no: 0 },{ text: "Befürchten Sie, dass Ihnen etwas Schlechtes zustossen wird?", yes: 1, no: 0 },{ text: "Fühlen Sie sich die meiste Zeit glücklich?", yes: 0, no: 1 }];
     const exhaustionOptions = [{ label: "selten oder überhaupt nicht (weniger als 1 Tag)", value: 0 },{ label: "manchmal (1 bis 2 Tage lang)", value: 1 },{ label: "öfters (3 bis 4 Tage lang)", value: 2 },{ label: "meistens, die ganze Zeit (5 bis 7 Tage lang)", value: 3 }];
     const miniBestItems = [
       {title:"1. VOM SITZEN ZUM STEHEN",instruction:"„Verschränken Sie die Arme vor Ihrer Brust. Versuchen Sie Ihre Hände nicht einzusetzen, sofern nicht notwendig. Sie sollten den Stuhl nicht mit der Rückseite Ihrer Beine berühren, wenn Sie stehen. Bitte stehen Sie jetzt auf.“",options:["(2) Normal: Steht ohne Einsatz der Hände auf und stabilisiert sich selbstständig.","(1) Moderat: Kommt beim ersten Versuch MIT Einsatz der Hände in den Stand.","(0) Schwer: Kann nicht ohne Unterstützung vom Stuhl aufstehen ODER benötigt mehrere Versuche mit Einsatz der Hände."]},
@@ -159,9 +157,8 @@
       {title:"14. TIMED UP & GO MIT DUAL TASK",instruction:"„Zählen Sie laut in Dreierschritten rückwärts. Bei Los stehen Sie auf, gehen zur Markierung, drehen, gehen zurück und setzen sich wieder.“",options:["(2) Normal: Kein erkennbarer Unterschied im Vergleich zum TUG ohne Dual Task.","(1) Moderat: Dual Task beeinflusst entweder Zählen ODER Gehen >10%.","(0) Schwer: Hört beim Gehen auf zu zählen ODER bleibt während des Zählens stehen."]}
     ];
     let swInterval=null, swStartTime=null, swElapsed=0, swRunning=false;
-    document.addEventListener("DOMContentLoaded",()=>{setToday();renderGDS();renderExhaustion();renderMiniBest();setupAutoCalculations();updatePage();});
+    document.addEventListener("DOMContentLoaded",()=>{setToday();renderExhaustion();renderMiniBest();setupAutoCalculations();updatePage();});
     function setToday(){document.getElementById("screeningDate").value=new Date().toISOString().split("T")[0];}
-    function renderGDS(){const c=document.getElementById("gdsContainer");c.innerHTML="";gdsItems.forEach((item,index)=>{const q=index+1;c.innerHTML+=`<div class="question-block"><div class="question-title">${q}. ${item.text}</div><div class="radio-row"><label><input type="radio" name="gds${q}" value="${item.yes}"> Ja</label><label><input type="radio" name="gds${q}" value="${item.no}"> Nein</label></div></div>`;});}
     function renderExhaustion(){document.getElementById("exhaustionContainer").innerHTML=`<div class="exhaustion-grid"><div class="exhaustion-header">Während der letzten zwei Wochen...</div><div class="exhaustion-header">selten oder überhaupt nicht<br><span class="muted">weniger als 1 Tag</span></div><div class="exhaustion-header">manchmal<br><span class="muted">1 bis 2 Tage</span></div><div class="exhaustion-header">öfters<br><span class="muted">3 bis 4 Tage</span></div><div class="exhaustion-header">meistens / ganze Zeit<br><span class="muted">5 bis 7 Tage</span></div><div class="exhaustion-question">War alles anstrengend für mich.</div><div class="exhaustion-cell"><input type="radio" name="exhaustion1" value="0"></div><div class="exhaustion-cell"><input type="radio" name="exhaustion1" value="1"></div><div class="exhaustion-cell"><input type="radio" name="exhaustion1" value="2"></div><div class="exhaustion-cell"><input type="radio" name="exhaustion1" value="3"></div><div class="exhaustion-question">Konnte ich mich zu nichts aufraffen.</div><div class="exhaustion-cell"><input type="radio" name="exhaustion2" value="0"></div><div class="exhaustion-cell"><input type="radio" name="exhaustion2" value="1"></div><div class="exhaustion-cell"><input type="radio" name="exhaustion2" value="2"></div><div class="exhaustion-cell"><input type="radio" name="exhaustion2" value="3"></div></div>`;}
     function renderMiniBest(){const c=document.getElementById("miniBestContainer");c.innerHTML="";miniBestItems.forEach((item,index)=>{const q=index+1;let extra="";if(q===14){extra=`<div class="form-grid three" style="margin-top: 1rem;"><div><label for="tugSingleTime">TUG ohne Dual Task (s)</label><input type="number" id="tugSingleTime" min="0" step="0.01" placeholder="z. B. 12.40"></div><div><label for="tugDualTime">TUG mit Dual Task (s)</label><input type="number" id="tugDualTime" min="0" step="0.01" placeholder="z. B. 15.10"></div><div><label for="tugDualDiff">Dual-Task-Differenz (%)</label><input type="text" id="tugDualDiff" readonly placeholder="automatisch"></div></div>`;}c.innerHTML+=`<div class="question-block"><label for="mb${q}"><strong>${item.title}</strong></label><p><strong>Anweisung:</strong> ${item.instruction}</p><select name="mb${q}" id="mb${q}" onchange="calculateMiniBEST()"><option value="">Bitte auswählen</option><option value="2">${item.options[0]}</option><option value="1">${item.options[1]}</option><option value="0">${item.options[2]}</option></select>${extra}</div>`;});const ts=document.getElementById("tugSingleTime"),td=document.getElementById("tugDualTime");if(ts&&td){ts.addEventListener("input",calculateTugDualDiff);td.addEventListener("input",calculateTugDualDiff);}}
     function setupAutoCalculations(){["gaitTime1","gaitTime2"].forEach(id=>document.getElementById(id).addEventListener("input",calculateGaitSpeed));document.getElementById("gaitDistance").addEventListener("change",calculateGaitSpeed);["gripTrial1","gripTrial2","gripTrial3"].forEach(id=>document.getElementById(id).addEventListener("input",calculateGripBest));}
@@ -184,7 +181,6 @@
     function toggleFallDetails(){const block=document.getElementById("fallDetails");if(!block)return;const show=radioValue("fall12m")==="Ja";block.style.display=show?"block":"none";if(!show){const c=document.getElementById("fallCount");if(c)c.value="";document.querySelectorAll('input[name="fallInjury"], input[name="fallGetUp"]').forEach(el=>el.checked=false);}}
     function inputValue(id){const el=document.getElementById(id);return el&&el.value?el.value:"nicht eingetragen";}
     function checkboxValue(id){const el=document.getElementById(id);return el&&el.checked;}
-    function calculateGDS(){let total=0,answered=0;for(let i=1;i<=4;i++){const s=document.querySelector(`input[name="gds${i}"]:checked`);if(s){total+=Number(s.value);answered++;}}return{total,answered};}
     function calculateExhaustion(){let total=0,answered=0,answers=[];for(let i=1;i<=2;i++){const s=document.querySelector(`input[name="exhaustion${i}"]:checked`);if(s){const val=Number(s.value);total+=val;answered++;const opt=exhaustionOptions.find(o=>o.value===val);answers.push(opt?opt.label:s.value);}else answers.push("nicht beantwortet");}return{total,answered,answers};}
     function getAge(){const birth=document.getElementById("birthDate").value,date=document.getElementById("screeningDate").value||new Date().toISOString().split("T")[0];if(!birth)return null;const b=new Date(birth),d=new Date(date);let age=d.getFullYear()-b.getFullYear();const m=d.getMonth()-b.getMonth();if(m<0||(m===0&&d.getDate()<b.getDate()))age--;return age;}
     function getSexText(){const sex=document.getElementById("sex").value;if(sex==="men")return"Männlich";if(sex==="women")return"Weiblich";return"nicht eingetragen";}
@@ -242,7 +238,6 @@
       const sexText = getSexText();
       const age = getAge();
 
-      const gds = calculateGDS();
       const exhaustion = calculateExhaustion();
       const mini = calculateMiniBEST();
 
@@ -285,7 +280,7 @@
         const selected = document.querySelector(`input[name="exhaustion${index + 1}"]:checked`);
         return selected && Number(selected.value) >= 2;
       });
-      const frailtyExhaustion = gds.total >= 2 || exhaustionCesDPositive;
+      const frailtyExhaustion = exhaustionCesDPositive;
       const frailtyStrength = sarcopeniaSitStand || lowGrip;
 
       const frailtyCriteria = [
@@ -315,13 +310,13 @@
       if (lowGait) abnormalTests.push("Gehgeschwindigkeit <0.8 m/s");
       if (sarcopeniaSitStand) abnormalTests.push("5x Sit-Stand >15 s oder nicht möglich");
       if (miniBestLow) abnormalTests.push("Mini-BESTest <20/28");
-      if (floorTransferAbnormal) abnormalTests.push("Transfer Boden -> Stand nicht selbstständig möglich");
+      if (floorTransferAbnormal) abnormalTests.push("Transfer Boden - Stand nicht selbstständig möglich");
 
       const fallRisk = classifyFallRisk(alarmCount, abnormalTests, fallCountNum, fallInjury, fallGetUp);
 
       return {
         firstName, lastName, birthDate, screeningDate, sexText, age,
-        gds, exhaustion, mini,
+        exhaustion, mini,
         activeDays, activeMinutes, activeTotal,
         gaitDistance, gaitTime1, gaitTime2, gaitBestTime, gaitSpeed,
         sitStandUnable, sitStandTime,
@@ -405,9 +400,11 @@
       y = addBoldWrappedText(doc, `Bester Wert: ${v.gripBest} kg`, x + 5, y, maxWidth, lh);
       y = addSmallGap(y);
 
-      y = addWrappedText(doc, "Mini-BESTest", x, y, maxWidth, lh);
-      y = addBoldWrappedText(doc, `Gesamtscore: ${v.mini.total} / 28`, x + 5, y, maxWidth, lh);
-      y = addSmallGap(y);
+      if (v.miniAnswered > 0) {
+        y = addWrappedText(doc, "Mini-BESTest", x, y, maxWidth, lh);
+        y = addBoldWrappedText(doc, `Gesamtscore: ${v.mini.total} / 28`, x + 5, y, maxWidth, lh);
+        y = addSmallGap(y);
+      }
 
       y = addWrappedText(doc, "Körperliche Aktivität", x, y, maxWidth, lh);
       y = addBoldWrappedText(doc, `Total: ${v.activeTotal} Minuten pro Woche`, x + 5, y, maxWidth, lh);
@@ -537,7 +534,6 @@ const name = safeFileName([
       y += 5;
 
       y = addSectionTitle(doc, "1. Screeningfragen", y);
-      item(`GDS-4: ${v.gds.total} / 4 Punkten (${v.gds.answered} / 4 Fragen beantwortet)`);
       item(`Exhaustion: ${v.exhaustion.total} / 6`);
       item(`Alles war anstrengend: ${v.exhaustion.answers[0]}`, 10);
       item(`Zu nichts aufraffen: ${v.exhaustion.answers[1]}`, 10);
@@ -566,7 +562,7 @@ const name = safeFileName([
       if (v.gripPercentile !== "nicht eingetragen") gripDetails.push(`Griffkraft Perzentil: P${v.gripPercentile}`);
       valueBlock("Griffkraft dominante Hand", `${v.gripBest} kg`, gripDetails);
 
-      valueBlock("Transfer Boden -> Stand", `${v.floorTransfer}`);
+      valueBlock("Transfer Boden - Stand", `${v.floorTransfer}`);
 
       if (v.miniAnswered > 0) valueBlock("Mini-BESTest", `${v.mini.total} / 28`);
       if (v.tugDualDiff !== "nicht eingetragen") valueBlock("Dual-Task-Kosten", `${v.tugDualDiff} %`);
