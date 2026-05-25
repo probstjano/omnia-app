@@ -374,74 +374,125 @@
       const maxWidth = 180;
       const lh = 6;
 
-      doc.setFontSize(16);
-      doc.setFont(undefined, "bold");
-      doc.text("Zusammenfassung Geriatrie-Screening", x, y);
-      doc.setFont(undefined, "normal");
-      y += 10;
+   doc.setFontSize(16);
+doc.setFont(undefined, "bold");
+doc.text("Kraft- und Gleichgewichtstestung", x, y);
+doc.setFont(undefined, "normal");
+y += 10;
 
-      doc.setFontSize(10);
-      y = addWrappedText(doc, `Name: ${v.firstName} ${v.lastName}`, x, y, maxWidth, lh);
-      y = addWrappedText(doc, `Geburtsdatum: ${v.birthDate}`, x, y, maxWidth, lh);
-      y = addWrappedText(doc, `Datum: ${v.screeningDate}`, x, y, maxWidth, lh);
-      y += 4;
+doc.setFontSize(10);
+y = addWrappedText(doc, `Name: ${v.firstName} ${v.lastName}`, x, y, maxWidth, lh);
+y = addWrappedText(doc, `Geburtsdatum: ${v.birthDate}`, x, y, maxWidth, lh);
+y = addWrappedText(doc, `Datum: ${v.screeningDate}`, x, y, maxWidth, lh);
+y += 5;
 
-      y = addSectionTitle(doc, "Ergebnisse", y);
+y = addSectionTitle(doc, "Ergebnisse", y);
 
-      y = addWrappedText(doc, "5x Sit-Stand", x, y, maxWidth, lh);
-      y = addBoldWrappedText(doc, `Endwert: ${v.sitStandTime}${v.sitStandUnable ? "" : " s"}`, x + 5, y, maxWidth, lh);
-      y = addSmallGap(y);
+y = addWrappedText(doc, "5x Sit-Stand", x, y, maxWidth, lh);
+y = addBoldWrappedText(doc, `Endwert: ${v.sitStandTime}${v.sitStandUnable ? "" : " s"}`, x + 5, y, maxWidth, lh);
+y = addSmallGap(y);
 
-      y = addWrappedText(doc, "Gehgeschwindigkeit", x, y, maxWidth, lh);
-      y = addBoldWrappedText(doc, `Schnellster Wert: ${v.gaitSpeed} m/s`, x + 5, y, maxWidth, lh);
-      y = addSmallGap(y);
+y = addWrappedText(doc, "Gehgeschwindigkeit", x, y, maxWidth, lh);
+y = addBoldWrappedText(doc, `Schnellster Wert: ${v.gaitSpeed} m/s`, x + 5, y, maxWidth, lh);
+y = addSmallGap(y);
 
-      y = addWrappedText(doc, "Griffkraft dominante Hand", x, y, maxWidth, lh);
-      y = addBoldWrappedText(doc, `Bester Wert: ${v.gripBest} kg`, x + 5, y, maxWidth, lh);
-      y = addSmallGap(y);
+y = addWrappedText(doc, "Griffkraft dominante Hand", x, y, maxWidth, lh);
+y = addBoldWrappedText(doc, `Bester Wert: ${v.gripBest} kg`, x + 5, y, maxWidth, lh);
+y = addSmallGap(y);
 
-      if (v.miniAnswered > 0) {
-        y = addWrappedText(doc, "Mini-BESTest", x, y, maxWidth, lh);
-        y = addBoldWrappedText(doc, `Gesamtscore: ${v.mini.total} / 28`, x + 5, y, maxWidth, lh);
-        y = addSmallGap(y);
-      }
+if (v.miniAnswered > 0) {
+  y = addWrappedText(doc, "Mini-BESTest", x, y, maxWidth, lh);
+  y = addBoldWrappedText(doc, `Gesamtscore: ${v.mini.total} / 28`, x + 5, y, maxWidth, lh);
+  y = addSmallGap(y);
+}
 
-      y = addWrappedText(doc, "Körperliche Aktivität", x, y, maxWidth, lh);
-      y = addBoldWrappedText(doc, `Total: ${v.activeTotal} Minuten pro Woche`, x + 5, y, maxWidth, lh);
-      y = addWrappedText(doc, "Die Weltgesundheitsorganisation (WHO) empfiehlt 150–300 Minuten körperliche Aktivität pro Woche in moderater Intensität.", x + 5, y, maxWidth, lh);
-      if (!isNaN(Number(v.activeTotal))) {
-        const activitySentence = Number(v.activeTotal) >= 150
-          ? "Ihre körperliche Aktivität liegt im empfohlenen Bereich."
-          : "Ihre körperliche Aktivität liegt unter den allgemeinen Empfehlungen.";
-        y = addWrappedText(doc, activitySentence, x + 5, y, maxWidth, lh);
-      }
-      y += 4;
-
-      y = addSectionTitle(doc, "Einordnung", y);
-
-      y = addWrappedText(doc, "Kraft", x, y, maxWidth, lh);
-      y = addWrappedText(doc, sitStandPercentileLine(v.sitStandNorm, "patient"), x + 5, y, maxWidth, lh);
-      if (v.gripPercentile !== "nicht eingetragen") {
-        y = addWrappedText(doc, `Die Griffkraft liegt bei Perzentil ${v.gripPercentile}. Das bedeutet: Der Wert ist besser als ca. ${v.gripPercentile}% der Vergleichsgruppe.`, x + 5, y, maxWidth, lh);
-      }
-      if (v.sarcopeniaSitStand || v.lowGrip) {
-        y = addWrappedText(doc, "Die Ergebnisse zeigen Hinweise auf einen relevanten Rückgang der Muskelkraft (Sarkopenie).", x + 5, y, maxWidth, lh);
-      } else {
-        y = addWrappedText(doc, "Die hinterlegten Kriterien zeigen keine deutlichen Hinweise auf einen relevanten Rückgang der Muskelkraft.", x + 5, y, maxWidth, lh);
-      }
-      y = addSmallGap(y);
-
-      y = addWrappedText(doc, "Sturzgefährdung", x, y, maxWidth, lh);
-      if (v.fallRisk.level === "stark erhöht") {
-        y = addWrappedText(doc, "Die Resultate der körperlichen Untersuchung deuten auf ein deutlich erhöhtes Sturzrisiko hin.", x + 5, y, maxWidth, lh);
-      } else if (v.fallRisk.level === "erhöht") {
-        y = addWrappedText(doc, "Die Resultate der körperlichen Untersuchung deuten auf eine erhöhte Sturzgefahr hin.", x + 5, y, maxWidth, lh);
-      } else {
-        y = addWrappedText(doc, "Die hinterlegten Kriterien zeigen keine eindeutigen Hinweise auf eine erhöhte Sturzgefahr.", x + 5, y, maxWidth, lh);
-      }
 y += 4;
 
 y = addSectionTitle(doc, "Was bedeuten diese Resultate?", y);
+
+y = addWrappedText(doc, "Kraft", x, y, maxWidth, lh);
+
+y = addWrappedText(doc, sitStandPercentileLine(v.sitStandNorm, "patient"), x + 5, y, maxWidth, lh);
+
+if (v.gripPercentile !== "nicht eingetragen") {
+  y = addWrappedText(
+    doc,
+    `Die Griffkraft liegt bei Perzentil ${v.gripPercentile}. Das bedeutet: Der Wert ist besser als ca. ${v.gripPercentile}% der Vergleichsgruppe.`,
+    x + 5,
+    y,
+    maxWidth,
+    lh
+  );
+}
+
+if (v.sarcopeniaSitStand || v.lowGrip) {
+  y += 1;
+  y = addBoldWrappedText(
+    doc,
+    "Die Ergebnisse zeigen Hinweise auf einen relevanten Rückgang der Muskelkraft (Sarkopenie).",
+    x + 5,
+    y,
+    maxWidth,
+    lh
+  );
+}
+
+y += 4;
+
+y = addWrappedText(doc, "Sturzgefährdung", x, y, maxWidth, lh);
+
+if (v.fallRisk.level === "stark erhöht") {
+  y = addBoldWrappedText(
+    doc,
+    "Die Resultate der körperlichen Untersuchungen deuten auf ein deutlich erhöhtes Sturzrisiko hin.",
+    x + 5,
+    y,
+    maxWidth,
+    lh
+  );
+} else if (v.fallRisk.level === "erhöht") {
+  y = addBoldWrappedText(
+    doc,
+    "Die Resultate der körperlichen Untersuchungen deuten auf eine erhöhte Sturzgefahr hin.",
+    x + 5,
+    y,
+    maxWidth,
+    lh
+  );
+} else {
+  y = addBoldWrappedText(
+    doc,
+    "Die Tests zeigen keine eindeutigen Hinweise auf eine erhöhte Sturzgefahr.",
+    x + 5,
+    y,
+    maxWidth,
+    lh
+  );
+}
+
+y += 4;
+
+y = addWrappedText(doc, "Körperliche Aktivität", x, y, maxWidth, lh);
+y = addBoldWrappedText(doc, `Total: ${v.activeTotal} Minuten pro Woche`, x + 5, y, maxWidth, lh);
+
+y = addWrappedText(
+  doc,
+  "Die Weltgesundheitsorganisation (WHO) empfiehlt 150–300 Minuten körperliche Aktivität pro Woche in moderater Intensität.",
+  x + 5,
+  y,
+  maxWidth,
+  lh
+);
+
+if (!isNaN(Number(v.activeTotal))) {
+  const activitySentence = Number(v.activeTotal) >= 150
+    ? "Ihre körperliche Aktivität liegt im empfohlenen Bereich."
+    : "Ihre körperliche Aktivität liegt unter den allgemeinen Empfehlungen.";
+
+  y = addBoldWrappedText(doc, activitySentence, x + 5, y, maxWidth, lh);
+}
+
+y += 5;
 
 y = addWrappedText(
   doc,
@@ -452,16 +503,17 @@ y = addWrappedText(
   lh
 );
 
-y += 1;
+y += 10;
 
-y = addWrappedText(
-  doc,
-  "Ergänzend zu unseren individuellen Empfehlungen erhalten Sie – je nach Resultaten – zusätzliche Informationen zu Bewegung, Krafttraining, Gleichgewicht, Sturzprävention und passenden Bewegungsangeboten.",
-  x,
-  y,
-  maxWidth,
-  lh
-);
+y = addSectionTitle(doc, "Gemeinsam festgelegte Prioritäten", y);
+
+doc.setFont(undefined, "normal");
+
+for (let i = 1; i <= 3; i++) {
+  doc.text(`${i}.`, x, y);
+  doc.line(x + 10, y, x + 170, y);
+  y += 18;
+}
       
       const birthDateForFile = v.birthDate
   ? v.birthDate.replaceAll("-", "")
