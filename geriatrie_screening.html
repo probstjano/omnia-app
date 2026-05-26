@@ -275,7 +275,7 @@
       const sarcopeniaSitStand = isSitStandSarcopeniaLikely();
       const lowGrip = isGripLow();
 
-      const physicalActivityLow = !isNaN(Number(activeTotal)) && Number(activeTotal) < 60;
+      const physicalActivityLow = !isNaN(Number(activeTotal)) && Number(activeTotal) < 45;
       const exhaustionCesDPositive = exhaustion.answers.some((answer, index) => {
         const selected = document.querySelector(`input[name="exhaustion${index + 1}"]:checked`);
         return selected && Number(selected.value) >= 2;
