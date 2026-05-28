@@ -192,11 +192,13 @@
     function addSectionTitle(doc,title,y){if(y>265){doc.addPage();y=20;}doc.setFontSize(13);doc.setFont(undefined,"bold");doc.text(title,15,y);doc.setFont(undefined,"normal");doc.setFontSize(10);return y+8;}
     function classifyFallRisk(alarmCount, abnormalTests, fallCountNum, fallInjury, fallGetUp) {
       const abnormalCount = abnormalTests.length;
-      const hasAlarm = alarmCount >= 1;
       const hasInjury = fallInjury === "Ja";
-      const notAbleToGetUp = fallGetUp === "Nein" || fallGetUp === "mit Hilfe / teilweise";
+      const notAbleToGetUp =
+        fallGetUp === "Nein" ||
+        fallGetUp === "mit Hilfe / teilweise";
       const multipleFalls = fallCountNum >= 2;
 
+      // Stark erhöht: unabhängig von körperlichen Tests
       if (hasInjury || notAbleToGetUp || multipleFalls) {
         return {
           level: "stark erhöht",
@@ -207,7 +209,9 @@
         };
       }
 
-      if (hasAlarm || abnormalCount >= 2) {
+      // Erhöht: mindestens 2 positive Alarmfragen UND mindestens 1 auffälliger Haupttest
+      // Haupttests: Gehgeschwindigkeit <0.8 m/s oder 5x Sit-Stand >15 s / nicht möglich
+      if (alarmCount >= 2 && abnormalCount >= 1) {
         return {
           level: "erhöht",
           text: "Die Resultate der Befragung und körperlichen Untersuchung deuten auf eine erhöhte Sturzgefährdung hin.",
@@ -309,8 +313,6 @@
       const abnormalTests = [];
       if (lowGait) abnormalTests.push("Gehgeschwindigkeit <0.8 m/s");
       if (sarcopeniaSitStand) abnormalTests.push("5x Sit-Stand >15 s oder nicht möglich");
-      if (miniBestLow) abnormalTests.push("Mini-BESTest <20/28");
-      if (floorTransferAbnormal) abnormalTests.push("Transfer Boden - Stand nicht selbstständig möglich");
 
       const fallRisk = classifyFallRisk(alarmCount, abnormalTests, fallCountNum, fallInjury, fallGetUp);
 
