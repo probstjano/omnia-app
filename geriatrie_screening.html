@@ -509,12 +509,14 @@ y += 10;
 
 y = addSectionTitle(doc, "Gemeinsam festgelegte Prioritäten", y);
 
+y += 8; // zusätzlicher Abstand zur ersten Zeile
+
 doc.setFont(undefined, "normal");
 
 for (let i = 1; i <= 3; i++) {
   doc.text(`${i}.`, x, y);
   doc.line(x + 10, y, x + 170, y);
-  y += 18;
+  y += 24; // mehr Platz zum Schreiben
 }
       
       const birthDateForFile = v.birthDate
