@@ -52,6 +52,58 @@
     .timer-actions { margin-top: .8rem; display: flex; gap: .6rem; flex-wrap: wrap; }
     .pdf-buttons { display: grid; gap: 1rem; margin-top: 1.2rem; }
     .pdf-buttons button { width: 100%; text-align: left; padding: 1rem; }
+
+    /* Grössere, besser lesbare Patient:innen-Texte */
+    .patient-intro {
+      font-size: 20px;
+      line-height: 1.6;
+      color: #222;
+      margin-bottom: 1.2rem;
+    }
+
+    .patient-help {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #333;
+      margin-top: .35rem;
+      margin-bottom: .9rem;
+    }
+
+    .patient-question {
+      font-size: 20px;
+      line-height: 1.45;
+      font-weight: 700;
+      margin-bottom: .8rem;
+    }
+
+    #page1 .card h3 {
+      font-size: 22px;
+      margin-bottom: .7rem;
+    }
+
+    #page1 label {
+      font-size: 19px;
+      line-height: 1.4;
+    }
+
+    #page1 .radio-row label {
+      font-size: 20px;
+      padding: .25rem 0;
+    }
+
+    #page1 input[type="number"] {
+      font-size: 20px;
+      padding: .85rem;
+    }
+
+    /* Exhaustion-Tabelle bewusst nicht zusätzlich vergrössern */
+    #page1 .exhaustion-grid label,
+    #page1 .exhaustion-grid,
+    #page1 .exhaustion-header,
+    #page1 .exhaustion-question {
+      font-size: inherit;
+    }
+
   </style>
 </head>
 <body>
@@ -82,25 +134,93 @@
 
   <section class="page" id="page1">
     <h2>2. Patient:innen-Fragen</h2>
-    <div class="card"><h3>Erschöpfung</h3><p class="muted"> <strong> Während der letzten zwei Wochen: Bitte geben Sie an, wie oft Sie sich so gefühlt haben. </strong></p><div id="exhaustionContainer"></div></div>
-    <div class="card"><h3>Körperliche Aktivität</h3><div class="form-grid two">
-      <div><label for="activeDays">An wie vielen Tagen pro Woche sind Sie körperlich aktiv?</label><p class="muted">Mindestens mässig ins Schwitzen oder ausser Atem kommen, z. B. zügiges Gehen, Wandern, Gartenarbeit, Velofahren, Sport.</p><input type="number" id="activeDays" min="0" max="7" step="1" placeholder="0–7 Tage"></div>
-      <div><label for="activeMinutes">Wie viele Minuten sind Sie an einem solchen Tag aktiv?</label><input type="number" id="activeMinutes" min="0" step="1" placeholder="Minuten pro aktivem Tag"></div>
-    </div></div>
-    <div class="card"><h3>Sturzfragen</h3>
-      <div class="question-block"><div class="question-title">Sind Sie in den letzten 12 Monaten gestürzt?</div><div class="radio-row"><label><input type="radio" name="fall12m" value="Ja" onchange="toggleFallDetails()"> Ja</label><label><input type="radio" name="fall12m" value="Nein" onchange="toggleFallDetails()"> Nein</label></div></div>
-      <div id="fallDetails" class="question-block" style="display:none;">
-        <div class="question-title">Zusatzfragen bei Sturz</div>
-        <div class="form-grid two">
-          <div><label for="fallCount">Wie viele Stürze in den letzten 12 Monaten?</label><input type="number" id="fallCount" min="1" step="1" placeholder="Anzahl Stürze"></div>
-          <div><label>Haben Sie sich dabei verletzt?</label><div class="radio-row"><label><input type="radio" name="fallInjury" value="Ja"> Ja</label><label><input type="radio" name="fallInjury" value="Nein"> Nein</label></div></div>
-          <div><label>Konnten Sie nach dem Sturz wieder aufstehen?</label><div class="radio-row"><label><input type="radio" name="fallGetUp" value="Ja"> Ja</label><label><input type="radio" name="fallGetUp" value="Nein"> Nein</label><label><input type="radio" name="fallGetUp" value="mit Hilfe / teilweise"> Mit Hilfe / teilweise</label></div></div>
+    <p class="patient-intro">Bitte beantworten Sie die folgenden Fragen möglichst selbständig. Es gibt keine richtigen oder falschen Antworten.</p>
+
+    <div class="card">
+      <h3>Erschöpfung</h3>
+      <p class="patient-help"><strong>Während der letzten zwei Wochen:</strong><br>Bitte geben Sie an, wie oft Sie sich so gefühlt haben.</p>
+      <div id="exhaustionContainer"></div>
+    </div>
+
+    <div class="card">
+      <h3>Körperliche Aktivität</h3>
+      <div class="form-grid two">
+        <div>
+          <label for="activeDays">An wie vielen Tagen pro Woche sind Sie körperlich aktiv?</label>
+          <p class="patient-help">Gemeint ist Aktivität, bei der Sie mindestens mässig ins Schwitzen oder ausser Atem kommen. Zum Beispiel zügiges Gehen, Wandern, Gartenarbeit, Velofahren oder Sport.</p>
+          <input type="number" id="activeDays" min="0" max="7" step="1" placeholder="0–7 Tage">
+        </div>
+        <div>
+          <label for="activeMinutes">Wie viele Minuten sind Sie an einem solchen Tag aktiv?</label>
+          <p class="patient-help">Bitte geben Sie die durchschnittliche Dauer pro aktivem Tag an.</p>
+          <input type="number" id="activeMinutes" min="0" step="1" placeholder="Minuten pro aktivem Tag">
         </div>
       </div>
-      <div class="question-block"><div class="question-title">Fühlen Sie sich beim Gehen oder Stehen unsicher?</div><div class="radio-row"><label><input type="radio" name="unsteady" value="Ja"> Ja</label><label><input type="radio" name="unsteady" value="Nein"> Nein</label></div></div>
-      <div class="question-block"><div class="question-title">Haben Sie Angst zu stürzen?</div><div class="radio-row"><label><input type="radio" name="fearFall" value="Ja"> Ja</label><label><input type="radio" name="fearFall" value="Nein"> Nein</label></div></div>
     </div>
-    <div class="card"><h3>Aufstehen vom Boden</h3><div class="question-block"><div class="question-title">Trauen Sie es sich aktuell zu, selbständig vom Boden aufzustehen?</div><div class="radio-row"><label><input type="radio" name="floorConfidence" value="Ja"> Ja</label><label><input type="radio" name="floorConfidence" value="Nein"> Nein</label></div></div></div>
+
+    <div class="card">
+      <h3>Sturzfragen</h3>
+
+      <div class="question-block">
+        <div class="patient-question">Sind Sie in den letzten 12 Monaten gestürzt?</div>
+        <div class="radio-row">
+          <label><input type="radio" name="fall12m" value="Ja" onchange="toggleFallDetails()"> Ja</label>
+          <label><input type="radio" name="fall12m" value="Nein" onchange="toggleFallDetails()"> Nein</label>
+        </div>
+      </div>
+
+      <div id="fallDetails" class="question-block" style="display:none;">
+        <div class="patient-question">Zusatzfragen bei Sturz</div>
+        <div class="form-grid two">
+          <div>
+            <label for="fallCount">Wie viele Stürze hatten Sie in den letzten 12 Monaten?</label>
+            <input type="number" id="fallCount" min="1" step="1" placeholder="Anzahl Stürze">
+          </div>
+          <div>
+            <label>Haben Sie sich dabei verletzt?</label>
+            <div class="radio-row">
+              <label><input type="radio" name="fallInjury" value="Ja"> Ja</label>
+              <label><input type="radio" name="fallInjury" value="Nein"> Nein</label>
+            </div>
+          </div>
+          <div>
+            <label>Konnten Sie nach dem Sturz wieder aufstehen?</label>
+            <div class="radio-row">
+              <label><input type="radio" name="fallGetUp" value="Ja"> Ja</label>
+              <label><input type="radio" name="fallGetUp" value="Nein"> Nein</label>
+              <label><input type="radio" name="fallGetUp" value="mit Hilfe / teilweise"> Mit Hilfe / teilweise</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <div class="patient-question">Fühlen Sie sich beim Gehen oder Stehen unsicher?</div>
+        <div class="radio-row">
+          <label><input type="radio" name="unsteady" value="Ja"> Ja</label>
+          <label><input type="radio" name="unsteady" value="Nein"> Nein</label>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <div class="patient-question">Haben Sie Angst zu stürzen?</div>
+        <div class="radio-row">
+          <label><input type="radio" name="fearFall" value="Ja"> Ja</label>
+          <label><input type="radio" name="fearFall" value="Nein"> Nein</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Aufstehen vom Boden</h3>
+      <div class="question-block">
+        <div class="patient-question">Trauen Sie es sich aktuell zu, selbständig vom Boden aufzustehen?</div>
+        <div class="radio-row">
+          <label><input type="radio" name="floorConfidence" value="Ja"> Ja</label>
+          <label><input type="radio" name="floorConfidence" value="Nein"> Nein</label>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="page" id="page2"><h2>Vielen Dank</h2><div class="card" style="text-align:center; padding:2rem;"><p style="font-size:20px; font-weight:bold;">Danke fürs Ausfüllen.</p><p style="font-size:18px;">Bitte geben Sie das iPad am Empfang oder Ihrer Therapeutin / Ihrem Therapeuten zurück.</p></div></section>
@@ -198,28 +318,28 @@
         fallGetUp === "mit Hilfe / teilweise";
       const multipleFalls = fallCountNum >= 2;
 
-      // Stark erhöht: unabhängig von körperlichen Tests
-      if (hasInjury || notAbleToGetUp || multipleFalls) {
-        return {
-          level: "stark erhöht",
-          text: "Die Resultate der Befragung deuten auf ein stark erhöhtes Sturzrisiko hin.",
-          reasons: abnormalTests,
-          alarmCount,
-          abnormalCount
-        };
-      }
+// Stark erhöht: unabhängig von körperlichen Tests bei Verletzung oder nicht selbständig hochgekommen.
+// Bei multiplen Stürzen nur, wenn zusätzlich mindestens ein Haupttest auffällig ist.
+if (hasInjury || notAbleToGetUp || (multipleFalls && abnormalCount >= 1)) {
+  return {
+    level: "stark erhöht",
+    text: "Die Resultate der Befragung deuten auf ein stark erhöhtes Sturzrisiko hin.",
+    reasons: abnormalTests,
+    alarmCount,
+    abnormalCount
+  };
+}
 
-      // Erhöht: mindestens 2 positive Alarmfragen UND mindestens 1 auffälliger Haupttest
-      // Haupttests: Gehgeschwindigkeit <0.8 m/s oder 5x Sit-Stand >15 s / nicht möglich
-      if (alarmCount >= 2 && abnormalCount >= 1) {
-        return {
-          level: "erhöht",
-          text: "Die Resultate der Befragung und körperlichen Untersuchung deuten auf eine erhöhte Sturzgefährdung hin.",
-          reasons: abnormalTests,
-          alarmCount,
-          abnormalCount
-        };
-      }
+// Erhöht: mindestens 1 positive Alarmfrage UND mindestens 1 auffälliger Haupttest
+if (alarmCount >= 1 && abnormalCount >= 1) {
+  return {
+    level: "erhöht",
+    text: "Die Resultate der Befragung und körperlichen Untersuchung deuten auf eine erhöhte Sturzgefährdung hin.",
+    reasons: abnormalTests,
+    alarmCount,
+    abnormalCount
+  };
+}
 
       return {
         level: "nicht eindeutig erhöht",
