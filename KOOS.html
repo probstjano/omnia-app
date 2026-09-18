@@ -110,8 +110,8 @@ const SYMPTOMS = [
  {id:"S1",text:"10. Schwellungen des Knies:",scale:SCALE_FREQ,values:[0,1,2,3,4]},
  {id:"S2",text:"11. Knacken / Reiben im Knie:",scale:SCALE_FREQ,values:[0,1,2,3,4]},
  {id:"S3",text:"12. Knie bleibt hängen/blockiert:",scale:SCALE_FREQ,values:[0,1,2,3,4]},
- {id:"S4",text:"13. Können Sie Ihr Knie ganz ausstrecken?",scale:["immer","oft","manchmal","selten","niemals"],values:[4,3,2,1,0]},
- {id:"S5",text:"14. Können Sie Ihr Knie ganz beugen?",scale:["immer","oft","manchmal","selten","niemals"],values:[4,3,2,1,0]},
+ {id:"S4",text:"13. Können Sie Ihr Knie ganz ausstrecken?",scale:["immer","oft","manchmal","selten","niemals"],values: [0,1,2,3,4]},
+ {id:"S5",text:"14. Können Sie Ihr Knie ganz beugen?",scale:["immer","oft","manchmal","selten","niemals"],values: [0,1,2,3,4]},
  {id:"S6",text:"15. Kniesteifigkeit morgens:",scale:SCALE_DEG,values:[0,1,2,3,4]},
  {id:"S7",text:"16. Kniesteifigkeit nach Sitzen/Liegen:",scale:SCALE_DEG,values:[0,1,2,3,4]},
 ];
@@ -164,6 +164,16 @@ function mean(a){ return a.reduce((x,y)=>x+y,0)/a.length; }
 function s(list){ return +(100 - mean(list.map(v))*25).toFixed(1); }
 
 function calculate(){
+  const allQuestions = [...PAIN, ...SYMPTOMS, ...ADL, ...SPORT, ...QOL];
+  const missing = allQuestions.find(q =>
+    !document.querySelector(`input[name="${q.id}"]:checked`)
+  );
+  if (missing) {
+    window.koosScores = null;
+    document.getElementById("result").textContent = "Bitte alle Antworten ausfüllen.";
+    document.querySelector(`input[name="${missing.id}"]`).focus();
+    return false;
+  }
   const pain = s(PAIN.map(i=>i.id));
   const symp = s(SYMPTOMS.map(i=>i.id));
   const adl  = s(ADL.map(i=>i.id));
@@ -181,13 +191,11 @@ KOOS Sport/Rec: ${sport} %
 KOOS Lebensqualität: ${qol} %
 
 KOOS Gesamt (Mittelwert der Subskalen): ${total} %`;
+  return true;
 }
 
 function downloadPDF(){
-  if(!window.koosScores){ 
-    alert("Bitte zuerst Score berechnen."); 
-    return; 
-  }
+  if (!calculate()) return;
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({unit:"mm", format:"a4"});
